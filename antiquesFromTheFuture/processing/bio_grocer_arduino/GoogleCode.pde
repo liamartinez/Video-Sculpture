@@ -15,12 +15,4 @@
       return(returnArray);
   };
   
-  //Function to generate a random list of integers
-  int[] getRandomNumbers(int c) {
 
-      int[] returnArray = new int[c];
-      for (int i = 0; i < c; i++) {
-         returnArray[i] = ceil(random(0,99));
-      };
-      return(returnArray);
-  };

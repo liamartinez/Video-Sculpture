@@ -1,21 +1,18 @@
+//google code
 SimpleSpreadsheetManager sm;
-//String sUrl = "t6mq_WLV5c5uj6mUNSryBIA";
-
 String sUrl = "0AurJ3F3c5fapdGJJZVlsNklsUFVMWW5BNDlTZE05eGc"; 
 String googleUser = "sushionthego";
 String googlePass = "tortor07185";
 
-
+//serial
 import processing.serial.*;
-
 Serial myPort;        
 float last, interval; 
 
-int inByte; 
-int initVal; 
+int inByte;  //values from arduino
+int initVal; //calibrated initial value
 
-
-Item[] items = new Item[8]; 
+Item[] items = new Item[8]; //array size
 int dial; 
 int chosenOne, chosenTwo;
 
@@ -30,14 +27,9 @@ void setup () {
   size (500, 500); 
   
    String[] names = getNumbers("name");
-   println (names); 
    String[] prefixes = getNumbers("prefix"); 
-   println (prefixes); 
    String[] suffixes = getNumbers ("suffix"); 
-   println (suffixes); 
    String[] descriptions = getNumbers ("description"); 
-   println (descriptions); 
-   
 
   println(Serial.list());
   String portName = Serial.list()[0];
@@ -67,7 +59,7 @@ void setup () {
 
   state = 0; 
   dial = 0;
-  locOneX = width/3;
+  locOneX = width/3-100;
   locOneY = height/3;
   chosenOne = 0; 
   chosenTwo = 0;
@@ -79,10 +71,10 @@ void draw () {
   background (255); 
   setInit(); //set initial rotation value 
   
-  println (inByte);
+  println ("inbyte " + inByte);
   
   while (millis() -last > interval) {  // while the current timer is greater than interval
-    if (inByte == (initVal + 5)) {     // if the rotation is this much over initial value
+    if (inByte == (initVal + 10)) {     // if the rotation is this much over initial value
       if (dial < (items.length-1)) {    //if dial is at the max number  
         dial ++;                        //go up the dial
       } 
@@ -92,7 +84,7 @@ void draw () {
       println ("plus 5");  
       last = millis();                  //reset the timer
     }
-    else if (inByte == (initVal - 3)) { // if the rotation is this much less than initial value
+    else if (inByte == (initVal - 10)) { // if the rotation is this much less than initial value
       if (dial != 0) {                  // if dial is at 0
         dial --;                        // go down the dial
       } 
@@ -176,7 +168,4 @@ void setInit () {
   }
 }
 
-//--------------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------------
 
