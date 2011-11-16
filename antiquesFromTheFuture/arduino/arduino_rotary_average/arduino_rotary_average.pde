@@ -13,6 +13,8 @@ void setup() {
   Serial.begin(9600); 
   for (int thisReading = 0; thisReading < numReadings; thisReading++)
     readings[thisReading] = 0;  
+  
+  pinMode (7, INPUT); //switch 1
 
 }
 

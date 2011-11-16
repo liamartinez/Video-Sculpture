@@ -50,10 +50,10 @@ void setup () {
   font = loadFont ("SansSerif-48.vlw"); 
   textFont(font, 48); 
 
-  //String[] input = loadStrings("groceries.csv");
+  String[] input = loadStrings("groceries.csv");
   for (int i = 0; i < items.length; i++) {
     items[i] = new Item();
-    //String[] splits = input[i].split(",");
+    String[] splits = input[i].split(",");
     items[i].name = names[i]; 
     items[i].prefix = prefixes[i]; 
     items[i].suffix = suffixes[i]; 
