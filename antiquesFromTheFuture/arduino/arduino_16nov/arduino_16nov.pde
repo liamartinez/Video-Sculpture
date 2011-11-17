@@ -1,4 +1,4 @@
-const int switchPin = 2;      // digital input 
+const int switchPin = 7;      // digital input 
 
  void setup() {
    // configure the serial connection:
