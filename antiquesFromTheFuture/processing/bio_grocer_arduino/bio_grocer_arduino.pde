@@ -12,10 +12,10 @@ boolean firstContact = false;
 
 int inByte;  //values from arduino
 int initVal; //calibrated initial value
+int bigSwitch; //switchpin
 
 Item[] items = new Item[8]; //array size
 int dial; 
-int bigSwitch; 
 int chosenOne, chosenTwo;
 
 PFont font; 
@@ -23,7 +23,7 @@ int locOneX, locOneY;
 
 int state; 
 
-
+int isItOn, wasItOn; 
 
 //--------------------------------------------------------------------------------
 void setup () {
@@ -68,6 +68,9 @@ void setup () {
   chosenOne = 0; 
   chosenTwo = 0;
 
+  isItOn = 0; 
+  wasItOn = 0; 
+
   myPort.bufferUntil('\n');
 }
 
@@ -75,36 +78,14 @@ void setup () {
 
 void draw () {
   background (255); 
+
   setInit(); //set initial rotation value 
 
-  //  println ("inbyte " + inByte);
+  println ("inbyte " + inByte);
+  println ("initVal " + initVal); 
 
-  isTheSwitchOn (bigSwitch); 
-  println ("BigSwitch " + bigSwitch); 
-
-  while (millis () -last > interval) {  // while the current timer is greater than interval
-    if (inByte == (initVal + 3)) {     // if the rotation is this much over initial value
-      if (dial < (items.length-1)) {    //if dial is at the max number  
-        dial ++;                        //go up the dial
-      } 
-      else {
-        dial = 0;                       // loopback to 0
-      }
-      println ("plus 5");  
-      last = millis();                  //reset the timer
-    }
-    else if (inByte == (initVal - 3)) { // if the rotation is this much less than initial value
-      if (dial != 0) {                  // if dial is at 0
-        dial --;                        // go down the dial
-      } 
-      else {
-        dial = (items.length-1);       //loopback to the max
-      }
-      println ("minus 3");
-      last = millis();                  //reset the timer
-    }
-  }
-
+  theSwitch (); 
+  theDial(); 
 
 
   switch (state) {
@@ -134,17 +115,23 @@ void draw () {
 //--------------------------------------------------------------------------------
 
 //void mousePressed () {
-void isTheSwitchOn (int isItOn) {
+void theSwitch () {
 
-  if (isItOn == 1) {
-    println ("IM ON!!"); 
-    if (state < 2) {
-      state ++;
-    } 
-    else {
-      state = 0;
+  isItOn = bigSwitch; 
+  println ("Is it on? " + isItOn); 
+
+  if (isItOn != wasItOn) {
+    if (isItOn == 1) {
+      if (state < 2) {
+        state ++;
+      } 
+      else {
+        state = 0;
+      }
     }
   }
+
+  wasItOn = isItOn;
 
   switch (state) {
   case 0: 
@@ -163,7 +150,33 @@ void isTheSwitchOn (int isItOn) {
 }
 
 //--------------------------------------------------------------------------------
+void theDial () {
 
+  while (millis () -last > interval) {  // while the current timer is greater than interval
+    if (inByte > (initVal + 10)) {     // if the rotation is this much over initial value
+      if (dial < (items.length-1)) {    //if dial is at the max number  
+        dial ++;                        //go up the dial
+      } 
+      else {
+        dial = 0;                       // loopback to 0
+      }
+      println ("plus 5");  
+      last = millis();                  //reset the timer
+    }
+    else if (inByte < (initVal - 10)) { // if the rotation is this much less than initial value
+      if (dial != 0) {                  // if dial is at 0
+        dial --;                        // go down the dial
+      } 
+      else {
+        dial = (items.length-1);       //loopback to the max
+      }
+      println ("minus 3");
+      last = millis();                  //reset the timer
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
 /*
 int serialEvent (Serial myPort) {
  // get the byte:
@@ -172,8 +185,8 @@ int serialEvent (Serial myPort) {
  }
  
  */
- 
- //-------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------
 // this is from tom igoe's second serial lab
 void serialEvent(Serial myPort) { 
   // read the serial buffer:
@@ -189,7 +202,7 @@ void serialEvent(Serial myPort) {
         myPort.clear();          // clear the serial port buffer
         firstContact = true;     // you've had first contact from the microcontroller
         myPort.write('A');       // ask for more
-      } 
+      }
     } 
     // if you have heard from the microcontroller, proceed:
     else {
@@ -197,15 +210,20 @@ void serialEvent(Serial myPort) {
       // and convert the sections into integers:
       int sensors[] = int(split(myString, ','));
 
+      /*
       // print out the values you got:
-      for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
-        print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
-      }
-      // add a linefeed after all the sensor values are printed:
-      println();
+       for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
+       print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
+       // add a linefeed after all the sensor values are printed:
+       println();
+       }
+       */
+
+
       if (sensors.length > 1) {
-      inByte = sensors[0]; 
-      bigSwitch = sensors[1];
+        inByte = sensors[0]; 
+        bigSwitch = sensors[1];
+        //println ("inByte " + inByte + " bigSwitch " + bigSwitch);
       }
     }
     // when you've parsed the data you have, ask for more:
@@ -226,6 +244,5 @@ void setInit () {
 }
 
 //--------------------------------------------------------------------------------
-
 
 
