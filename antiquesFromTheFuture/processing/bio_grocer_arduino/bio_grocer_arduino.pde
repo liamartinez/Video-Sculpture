@@ -26,12 +26,13 @@ int state;
 int isItOn, wasItOn; 
 
 int factor; 
+int oldDial, newDial; 
 
 //--------------------------------------------------------------------------------
 void setup () {
   size (500, 500); 
 
-
+  //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
   String[] prefixes = getNumbers("prefix"); 
   String[] suffixes = getNumbers ("suffix"); 
@@ -95,11 +96,15 @@ void draw () {
 
   case 0:  
     items[dial].displayName (locOneX, locOneY, true); 
+    items[dial].animateEntry(); 
+
     break; 
 
   case 1:
     items[chosenOne].displayName (locOneX, locOneY, false); 
     items[dial].displayName (locOneX + 200, locOneY, true); 
+    items[dial].animateEntry(); 
+ 
     break; 
 
   case 2: 
@@ -146,21 +151,18 @@ void theSwitch () {
   switch (state) {
   case 0: 
     chosenOne = -1; 
-    chosenTwo = -1; 
-    
+    chosenTwo = -1;    
     break; 
 
   case 1:
     if (chosenOne == -1){
     chosenOne = dial; 
-    }
-    break;
+    } break;
 
   case 2:
     if (chosenTwo == -1) {
     chosenTwo = dial;
-    }
-    break;
+    } break;
   }
 }
 
@@ -170,12 +172,12 @@ void theDial () {
   while (millis () -last > interval) {  // while the current timer is greater than interval
     if (inByte > (initVal + factor)) {     // if the rotation is this much over initial value
       if (dial < (items.length-1)) {    //if dial is at the max number  
-        dial ++;                        //go up the dial
+        dial ++;        //go up the dial 
       } 
       else {
         dial = 0;                       // loopback to 0
       }
-      println ("plus 3");  
+      println ("move forward");  
     }
     else if (inByte < (initVal - factor)) { // if the rotation is this much less than initial value
       if (dial != 0) {                  // if dial is at 0
@@ -184,7 +186,6 @@ void theDial () {
       else {
         dial = (items.length-1);       //loopback to the max
       }
-      println ("minus 3");
     }
     last = millis();                  //reset the timer
   }
@@ -199,9 +200,7 @@ void serialEvent(Serial myPort) {
   String myString = myPort.readStringUntil('\n');
   // if you got any bytes other than the linefeed:
   if (myString != null) {
-
     myString = trim(myString);
-
     // if you haven't heard from the microncontroller yet, listen:
     if (firstContact == false) {
       if (myString.equals("hello")) { 
@@ -215,10 +214,8 @@ void serialEvent(Serial myPort) {
       int sensors[] = int(split(myString, ','));
        for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
        //print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
-
        println();
        }
-
       if (sensors.length > 1) {
         inByte = sensors[0]; 
         bigSwitch = sensors[1];
