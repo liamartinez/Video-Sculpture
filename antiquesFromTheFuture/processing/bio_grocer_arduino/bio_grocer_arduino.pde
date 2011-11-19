@@ -81,8 +81,8 @@ void draw () {
 
   setInit(); //set initial rotation value 
 
-  println ("inbyte " + inByte);
-  println ("initVal " + initVal); 
+ // println ("inbyte " + inByte);
+  //println ("initVal " + initVal); 
 
   theSwitch (); 
   theDial(); 
@@ -151,6 +151,7 @@ void theSwitch () {
 
 //--------------------------------------------------------------------------------
 void theDial () {
+  wasItOn = isItOn;
 
   while (millis () -last > interval) {  // while the current timer is greater than interval
     if (inByte > (initVal + 10)) {     // if the rotation is this much over initial value
@@ -209,15 +210,20 @@ void serialEvent(Serial myPort) {
       // split the string at the commas
       // and convert the sections into integers:
       int sensors[] = int(split(myString, ','));
+/* TRY THIS LATER! LIA
+    // Add the latest byte from the serial port to array:
+    serialInArray[serialCount] = inByte;
+    serialCount++;
+*/
 
-      /*
+      
       // print out the values you got:
        for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
-       print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
+       print("Sensor inside " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
        // add a linefeed after all the sensor values are printed:
        println();
        }
-       */
+      
 
 
       if (sensors.length > 1) {
