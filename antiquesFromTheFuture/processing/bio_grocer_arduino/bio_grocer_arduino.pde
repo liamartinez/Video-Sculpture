@@ -25,7 +25,7 @@ int state;
 
 int isItOn, wasItOn; 
 
-int factor; 
+int factorForward, factorBackward; 
 int oldDial, newDial; 
 int lastDial; 
 boolean forward; 
@@ -77,7 +77,8 @@ void setup () {
   isItOn = 0; 
   wasItOn = 0; 
   
-  factor = 5; 
+  factorForward = 2;
+  factorBackward = 2;  
   
  randomItem = int(random(0, items.length)); 
 
@@ -89,20 +90,19 @@ void draw () {
   background (255); 
 
   setInit(); //set initial rotation value 
-
+  
+  println ("initvalue is " + initVal + " inbyte is " + inByte); 
+  
   theSwitch (); 
   theDial(); 
 
   displayState(); 
-  
   
 }
 
 
 //--------------------------------------------------------------------------------
 void displayState () {
-  
-  
   
   switch (state) {
 
@@ -162,7 +162,7 @@ void animateDial (int heightVar_) {
       else {
         items[items.length-1].animateExit( heightVar_); //if the dial is less than 0, then loopback to the end
       }
-      println ("forward!");
+      //println ("forward!");
     } 
       //if the dial is going backwards do this
     else {
@@ -173,7 +173,7 @@ void animateDial (int heightVar_) {
       else {
         items[0].animateExitBackward( heightVar_);      //if the dial is greater than the maximum, loop back to the beginning
       }
-      println ("backward");
+      //println ("backward");
     } 
 
 }
@@ -183,7 +183,6 @@ void animateDial (int heightVar_) {
 void theSwitch () {
 
   isItOn = bigSwitch; 
-
 
   if (isItOn != wasItOn) {
     if (isItOn == 1) {
@@ -222,7 +221,7 @@ void theSwitch () {
 void theDial () {
 
   while (millis () -last > interval) {  // while the current timer is greater than interval
-    if (inByte > (initVal + factor)) {     // if the rotation is this much over initial value
+    if (inByte > (initVal + factorForward)) {     // if the rotation is this much over initial value
       if (dial < (items.length-1)) {    //if dial is at the max number  
         dial ++;        //go up the dial
       } 
@@ -232,7 +231,7 @@ void theDial () {
       println ("move forward"); 
       forward = true;
     }
-    else if (inByte < (initVal - factor)) { // if the rotation is this much less than initial value
+    else if (inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
       if (dial != 0) {                  // if dial is at 0
         dial --;                        // go down the dial
       } 
