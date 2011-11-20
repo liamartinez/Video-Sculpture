@@ -32,13 +32,14 @@ boolean forward;
 
 //--------------------------------------------------------------------------------
 void setup () {
-  size (500, 500); 
+  size (1000, 1000); 
 
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
   String[] prefixes = getNumbers("prefix"); 
   String[] suffixes = getNumbers ("suffix"); 
   String[] descriptions = getNumbers ("description"); 
+  String[] price = getNumbers ("price"); 
 
   println(Serial.list());
   String portName = Serial.list()[0];
@@ -57,6 +58,7 @@ void setup () {
     items[i].prefix = prefixes[i]; 
     items[i].suffix = suffixes[i]; 
     items[i].description = descriptions[i]; 
+    items[i].price = float(price[i]); 
     println (i+ " " + items[i].name);
   }
 
@@ -71,11 +73,9 @@ void setup () {
   wasItOn = 0; 
 
   myPort.bufferUntil('\n');
-  
+
   factor = 5; 
-  lastDial = 12; 
-  
-  textAlign(CENTER);
+  lastDial = 12;
 }
 
 //--------------------------------------------------------------------------------
@@ -89,86 +89,84 @@ void draw () {
   theDial(); 
 
   displayState(); 
-  //println ("state is " + state + " chosenOne is " + chosenOne + " chosenTwo is " + chosenTwo); 
-  
-  
+  //println ("state is " + state + " chosenOne is " + chosenOne + " chosenTwo is " + chosenTwo);
 }
 
 
 //--------------------------------------------------------------------------------
- void displayState () {
- switch (state) {
+void displayState () {
+  switch (state) {
 
   case 0:  
-  
+
     if (forward == true) {
       items[dial].animateEntry(); 
       if ((dial-1) > 0) {
-      items[dial-1].animateExit();   
-      } else {
-      items[items.length-1].animateExit();
+        items[dial-1].animateExit();
+      } 
+      else {
+        items[items.length-1].animateExit();
       }
-    println ("forward!"); 
-    } else {
-      items[dial].animateEntry(); 
-        if ((dial + 1) < items.length-1) { 
-      items[dial+1].animateExit();   
-        } else {
-        items[0].animateExit(); 
-        }
-    println ("backward"); 
+      println ("forward!");
     } 
-    
-    
-    /*
-    println (dial);       
-    if (lastDial != dial){ 
-      
-      items[dial].animateEntry(); 
-      items[lastDial].animateExit();   
-      lastDial = dial;
-    }
-    */
-    //lastDial = dial;
-    
-    
-    /*
-    if (lastDial != dial){  
-    lastDial = dial;     
+    else {
+      items[dial].animateEntryBackward(); 
+      if ((dial + 1) < items.length-1) { 
+        items[dial+1].animateExitBackward();
+      } 
+      else {
+        items[0].animateExitBackward();
+      }
+      println ("backward");
     } 
-    
-    items[dial].animateEntry(); 
-    items[lastDial].animateExit();       
-    */    
 
     break; 
 
   case 1:
     items[chosenOne].displayName (locOneX, locOneY, false); 
-    items[dial].displayName (locOneX + 200, locOneY, true); 
-    items[dial].animateEntry(); 
- 
+
+    if (forward == true) {
+      items[dial].animateEntry(); 
+      if ((dial-1) > 0) {
+        items[dial-1].animateExit();
+      } 
+      else {
+        items[items.length-1].animateExit();
+      }
+      println ("forward!");
+    } 
+    else {
+      items[dial].animateEntryBackward(); 
+      if ((dial + 1) < items.length-1) { 
+        items[dial+1].animateExitBackward();
+      } 
+      else {
+        items[0].animateExitBackward();
+      }
+      println ("backward");
+    } 
+
     break; 
 
   case 2: 
     items[chosenOne].displayName (locOneX, locOneY, false); 
     items[chosenTwo].displayName (locOneX + 200, locOneY, false); 
-    
+
     text ("hit the lever to continue", locOneX, locOneY + 300); 
-    
+
     break;
-    
+
   case 3:
     //combine the prefixes and suffixes
+    text (items[chosenOne].name + " : " + items[chosenOne].price,  locOneX, locOneY - 40);
+    text (items[chosenTwo].name + " : " + items[chosenTwo].price, locOneX, locOneY - 20); 
     text ("you got a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!!", locOneX, locOneY+30); 
-    text ("it " + items[chosenOne].description + " and " + items[chosenTwo].description, locOneX, locOneY+60); 
-    text ("it costs this much", locOneX, locOneY + 120); 
-    break;
-    
+    text ("total cost: " + (items[chosenOne].price + items[chosenTwo].price)); 
+    text ("it is " + items[chosenOne].description + " and " + items[chosenTwo].description, locOneX, locOneY+60); 
 
+    break;
   }
- 
- }
+}
 
 
 //--------------------------------------------------------------------------------
@@ -198,14 +196,16 @@ void theSwitch () {
     break; 
 
   case 1:
-    if (chosenOne == -1){
-    chosenOne = dial; 
-    } break;
+    if (chosenOne == -1) {
+      chosenOne = dial;
+    } 
+    break;
 
   case 2:
     if (chosenTwo == -1) {
-    chosenTwo = dial;
-    } break;
+      chosenTwo = dial;
+    } 
+    break;
   }
 }
 
@@ -215,13 +215,13 @@ void theDial () {
   while (millis () -last > interval) {  // while the current timer is greater than interval
     if (inByte > (initVal + factor)) {     // if the rotation is this much over initial value
       if (dial < (items.length-1)) {    //if dial is at the max number  
-        dial ++;        //go up the dial 
+        dial ++;        //go up the dial
       } 
       else {
         dial = 0;                       // loopback to 0
       }
       println ("move forward"); 
-      forward = true;  
+      forward = true;
     }
     else if (inByte < (initVal - factor)) { // if the rotation is this much less than initial value
       if (dial != 0) {                  // if dial is at 0
@@ -230,11 +230,10 @@ void theDial () {
       else {
         dial = (items.length-1);       //loopback to the max
       }
-     forward = false;  
+      forward = false;
     }
     last = millis();                  //reset the timer
   }
-
 }
 
 
@@ -258,10 +257,10 @@ void serialEvent(Serial myPort) {
     // if you have heard from the microcontroller, proceed:
     else {
       int sensors[] = int(split(myString, ','));
-       for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
-       //print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
-       println();
-       }
+      for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
+        //print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
+        println();
+      }
       if (sensors.length > 1) {
         inByte = sensors[0]; 
         bigSwitch = sensors[1];
@@ -284,5 +283,4 @@ void setInit () {
 }
 
 //--------------------------------------------------------------------------------
-
 
