@@ -30,9 +30,13 @@ int oldDial, newDial;
 int lastDial; 
 boolean forward; 
 
+int randomItem; 
+int itemOneX, itemOneY;
+int itemTwoX, itemTwoY; 
+
 //--------------------------------------------------------------------------------
 void setup () {
-  size (1000, 1000); 
+  size (600, 800); 
 
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
@@ -44,6 +48,7 @@ void setup () {
   println(Serial.list());
   String portName = Serial.list()[0];
   myPort = new Serial(this, portName, 9600);
+  myPort.bufferUntil('\n');
   initVal = 0;
   last = millis(); 
   interval = 500;
@@ -71,11 +76,11 @@ void setup () {
 
   isItOn = 0; 
   wasItOn = 0; 
-
-  myPort.bufferUntil('\n');
-
+  
   factor = 5; 
-  lastDial = 12;
+  
+ randomItem = int(random(0, items.length)); 
+
 }
 
 //--------------------------------------------------------------------------------
@@ -89,85 +94,89 @@ void draw () {
   theDial(); 
 
   displayState(); 
-  //println ("state is " + state + " chosenOne is " + chosenOne + " chosenTwo is " + chosenTwo);
+  
+  
 }
 
 
 //--------------------------------------------------------------------------------
 void displayState () {
+  
+  
+  
   switch (state) {
 
   case 0:  
-
-    if (forward == true) {
-      items[dial].animateEntry(); 
-      if ((dial-1) > 0) {
-        items[dial-1].animateExit();
-      } 
-      else {
-        items[items.length-1].animateExit();
-      }
-      println ("forward!");
-    } 
-    else {
-      items[dial].animateEntryBackward(); 
-      if ((dial + 1) < items.length-1) { 
-        items[dial+1].animateExitBackward();
-      } 
-      else {
-        items[0].animateExitBackward();
-      }
-      println ("backward");
-    } 
+    //choose the first
+    textAlign (CENTER); 
+    animateDial(height/2 - 15);  //the height is the only variable you need to change
+    items[randomItem].displayName (width/2, height/2 + 15, false); 
 
     break; 
 
   case 1:
-    items[chosenOne].displayName (locOneX, locOneY, false); 
-
-    if (forward == true) {
-      items[dial].animateEntry(); 
-      if ((dial-1) > 0) {
-        items[dial-1].animateExit();
-      } 
-      else {
-        items[items.length-1].animateExit();
-      }
-      println ("forward!");
-    } 
-    else {
-      items[dial].animateEntryBackward(); 
-      if ((dial + 1) < items.length-1) { 
-        items[dial+1].animateExitBackward();
-      } 
-      else {
-        items[0].animateExitBackward();
-      }
-      println ("backward");
-    } 
+    //first chosen, choose the second
+    items[chosenOne].displayName (width/2, height/2 - 15, false); 
+    animateDial(height/2 + 15); 
 
     break; 
 
   case 2: 
-    items[chosenOne].displayName (locOneX, locOneY, false); 
-    items[chosenTwo].displayName (locOneX + 200, locOneY, false); 
-
+    //first chosen, second chosen
+    items[chosenOne].displayName (width/2, height/2 - 15, false); 
+    items[chosenTwo].displayName (width/2, height/2 + 15, false); 
+    
+    textAlign (LEFT); 
     text ("hit the lever to continue", locOneX, locOneY + 300); 
 
     break;
 
   case 3:
-    //combine the prefixes and suffixes
-    text (items[chosenOne].name + " : " + items[chosenOne].price,  locOneX, locOneY - 40);
-    text (items[chosenTwo].name + " : " + items[chosenTwo].price, locOneX, locOneY - 20); 
-    text ("you got a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!!", locOneX, locOneY+30); 
-    text ("total cost: " + (items[chosenOne].price + items[chosenTwo].price)); 
-    text ("it is " + items[chosenOne].description + " and " + items[chosenTwo].description, locOneX, locOneY+60); 
-
+    //last page
+   
+    textSize (20); 
+    textAlign (CENTER); 
+    text (items[chosenOne].name + " : " + items[chosenOne].price,  locOneX, locOneY - 60);
+    text (items[chosenTwo].name + " : " + items[chosenTwo].price, locOneX, locOneY - 30); 
+    textAlign (LEFT); 
+    text ("you got a " + items[chosenOne].prefix + items[chosenTwo].suffix, locOneX, locOneY+30); 
+    text ("total cost: " + (items[chosenOne].price + items[chosenTwo].price), locOneX, locOneY+60); 
+    text ("it is " + items[chosenOne].description + " and " + items[chosenTwo].description, locOneX, locOneY+90); 
+    
+    dial = int(random (0, items.length)); 
     break;
   }
 }
 
+
+// ------------------------------------------------------------------------------
+
+void animateDial (int heightVar_) {
+      
+      //if the dial is going forward do this
+      if (forward == true) {
+      items[dial].animateEntry( heightVar_); 
+      if ((dial-1) > 0) {              
+        items[dial-1].animateExit( heightVar_);
+      } 
+      else {
+        items[items.length-1].animateExit( heightVar_); //if the dial is less than 0, then loopback to the end
+      }
+      println ("forward!");
+    } 
+      //if the dial is going backwards do this
+    else {
+      items[dial].animateEntryBackward( heightVar_); 
+      if ((dial + 1) < items.length-1) { 
+        items[dial+1].animateExitBackward( heightVar_);
+      } 
+      else {
+        items[0].animateExitBackward( heightVar_);      //if the dial is greater than the maximum, loop back to the beginning
+      }
+      println ("backward");
+    } 
+
+}
 
 //--------------------------------------------------------------------------------
 
@@ -278,7 +287,7 @@ void serialEvent(Serial myPort) {
 void setInit () {
   if ((millis() > 3000) && (initVal == 0)) {
     initVal = inByte;
-    dial = 0;
+    dial = randomItem;
   }
 }
 

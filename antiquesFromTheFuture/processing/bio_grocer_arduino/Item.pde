@@ -8,6 +8,7 @@ class Item {
   int xPos, yPos; 
   int xPosExit, yPosexit;
   int xPosExitBack, xPosBack; 
+  int disappear; 
 
   //float locX, locY; 
 
@@ -17,6 +18,8 @@ class Item {
     xPosExit = width/2; 
     xPosExitBack = width/2;
     xPosBack = width;
+    disappear = 100; 
+    textAlign (CENTER);
   }
 
   void displayName (float locX, float locY, boolean blinkOn) {
@@ -42,41 +45,42 @@ class Item {
     return prefix;
   }
 
-  void animateEntry () {
+  void animateEntry (int heightVar) {
+    // --> this way
     fill(255, 0, 0); 
-    text (name, xPos, height/2); 
+    text (name, xPos, heightVar); 
     if (xPos < width/2) {
       xPos = xPos + 10;
     }
   }
 
-  void animateExit () {
-
+  void animateExit (int heightVar) {
+    // --> this way
     fill (255, 0, 0);
-    text (name, xPosExit, height/2); 
+    text (name, xPosExit, heightVar); 
 
-    if (xPosExit < width) {
+    if (xPosExit < width + disappear) {
       xPosExit = xPosExit + 10;
     }
   }
-  
-    void animateEntryBackward () {
+
+  void animateEntryBackward (int heightVar) {
+    // <-- this way  
     fill(255, 0, 0); 
-    text (name, xPosBack, height/2); 
+    text (name, xPosBack, heightVar); 
     if (xPosBack > width/2) {
       xPosBack = xPosBack - 10;
     }
   }
-  
-    void animateExitBackward () {
 
+  void animateExitBackward (int heightVar) {
+    // <-- this way 
     fill (255, 0, 0);
-    text (name, xPosExitBack, height/2); 
+    text (name, xPosExitBack, heightVar); 
 
-    if (xPosExitBack > 0) {
+    if (xPosExitBack > 0 - (disappear * 2 )) {
       xPosExitBack = xPosExitBack - 10;
     }
   }
-  
 }
 
