@@ -27,6 +27,8 @@ int isItOn, wasItOn;
 
 int factor; 
 int oldDial, newDial; 
+int lastDial; 
+boolean forward; 
 
 //--------------------------------------------------------------------------------
 void setup () {
@@ -71,6 +73,9 @@ void setup () {
   myPort.bufferUntil('\n');
   
   factor = 5; 
+  lastDial = 12; 
+  
+  textAlign(CENTER);
 }
 
 //--------------------------------------------------------------------------------
@@ -84,7 +89,7 @@ void draw () {
   theDial(); 
 
   displayState(); 
-  println ("state is " + state + " chosenOne is " + chosenOne + " chosenTwo is " + chosenTwo); 
+  //println ("state is " + state + " chosenOne is " + chosenOne + " chosenTwo is " + chosenTwo); 
   
   
 }
@@ -95,8 +100,46 @@ void draw () {
  switch (state) {
 
   case 0:  
-    items[dial].displayName (locOneX, locOneY, true); 
+  
+    if (forward == true) {
+      items[dial].animateEntry(); 
+      if ((dial-1) > 0) {
+      items[dial-1].animateExit();   
+      } else {
+      items[items.length-1].animateExit();
+      }
+    println ("forward!"); 
+    } else {
+      items[dial].animateEntry(); 
+        if ((dial + 1) < items.length-1) { 
+      items[dial+1].animateExit();   
+        } else {
+        items[0].animateExit(); 
+        }
+    println ("backward"); 
+    } 
+    
+    
+    /*
+    println (dial);       
+    if (lastDial != dial){ 
+      
+      items[dial].animateEntry(); 
+      items[lastDial].animateExit();   
+      lastDial = dial;
+    }
+    */
+    //lastDial = dial;
+    
+    
+    /*
+    if (lastDial != dial){  
+    lastDial = dial;     
+    } 
+    
     items[dial].animateEntry(); 
+    items[lastDial].animateExit();       
+    */    
 
     break; 
 
@@ -177,7 +220,8 @@ void theDial () {
       else {
         dial = 0;                       // loopback to 0
       }
-      println ("move forward");  
+      println ("move forward"); 
+      forward = true;  
     }
     else if (inByte < (initVal - factor)) { // if the rotation is this much less than initial value
       if (dial != 0) {                  // if dial is at 0
@@ -186,9 +230,11 @@ void theDial () {
       else {
         dial = (items.length-1);       //loopback to the max
       }
+     forward = false;  
     }
     last = millis();                  //reset the timer
   }
+
 }
 
 
