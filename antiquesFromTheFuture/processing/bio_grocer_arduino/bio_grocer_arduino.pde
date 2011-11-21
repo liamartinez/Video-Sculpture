@@ -21,6 +21,7 @@ int chosenOne, chosenTwo;
 //visuals
 PImage [] bottoms = new PImage[items.length];
 PImage [] tops = new PImage[items.length];
+PImage logo; 
 
 PFont didot;
 PFont didotItalic;
@@ -44,7 +45,7 @@ int itemTwoX, itemTwoY;
 //--------------------------------------------------------------------------------
 void setup () {
   size (800, 480); 
-  imageMode (CENTER); 
+  
 
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
@@ -64,12 +65,13 @@ void setup () {
   didot = loadFont ("Didot-48.vlw");   
   didotItalic = loadFont ("Didot-Italic-48.vlw"); 
   textFont(didot, 48); 
-
+  logo = loadImage ("geno_logo.jpg"); 
 
   for (int i = 0; i < items.length; i++) {
     tops[i] = loadImage ("top_" + i + ".jpg");
     bottoms[i] = loadImage ("bot_" + i + ".jpg");
   }
+  
 
   for (int i = 0; i < items.length; i++) {
     items[i] = new Item();
@@ -96,7 +98,7 @@ void setup () {
   factorForward = 5;
   factorBackward = 5;  
   interval = 500;
-  heightFactor = 140; 
+  heightFactor = 63; 
 
   randomItem = int(random(0, items.length));
 }
@@ -105,6 +107,8 @@ void setup () {
 
 void draw () {
   background (255); 
+  imageMode (CORNER); 
+  image (logo, 0,0); 
 
   //image (items[dial].picTop, 0, 0);
   setInit(); //set initial rotation value 
@@ -115,7 +119,7 @@ void draw () {
   println ("dial number " + dial); 
   theSwitch (); 
 
-
+  imageMode (CENTER); 
   displayState();
 }
 
@@ -131,19 +135,22 @@ void displayState () {
 
     //animateDial(height/2 - heightFactor, true);  //the height is the only variable you need to change
     //lastDial = dial; 
-    ;
+    
     //items[randomItem].displayName (width/2, height/2 + 15, false); 
-    items[dial].displayPicTop (width/2, height/2 - heightFactor, true); 
-    items[randomItem].displayPicBot (width/2, height/2 + heightFactor, false); 
+    items[dial].displayPicTop (width/2, (height/2 - heightFactor) +60 , true); 
+    items[dial].displayName (width/2 - 200,  (height/2-5) +60 , true); 
+    
+    items[randomItem].displayPicBot (width/2, (height/2 + heightFactor) + 60, false); 
+    items[randomItem].displayName (width/2 + 200, (height/2+30) + 60, false); 
 
     break; 
 
   case 1:
     //first chosen, choose the second
     //items[chosenOne].displayName (width/2, height/2 - 15, false); 
-    items[chosenOne].displayPicTop (width/2, height/2 - heightFactor, false); 
+    items[chosenOne].displayPicTop (width/2 - 200, (height/2 - heightFactor) + 60, false); 
     //animateDial(height/2 + heightFactor, false); 
-    items[dial].displayPicBot (width/2, height/2 + heightFactor, true); 
+    items[dial].displayPicBot (width/2 + 200, (height/2 + heightFactor) + 60, true); 
 
     break; 
 
@@ -152,8 +159,8 @@ void displayState () {
     //items[chosenOne].displayName (width/2, height/2 - 15, false); 
     //items[chosenTwo].displayName (width/2, height/2 + 15, false); 
 
-    items[chosenOne].displayPicTop (width/2, height/2 - heightFactor, false); 
-    items[chosenTwo].displayPicBot (width/2, height/2 + heightFactor, false); 
+    items[chosenOne].displayPicTop (width/2 - 200, (height/2 - heightFactor) + 60, false); 
+    items[chosenTwo].displayPicBot (width/2 + 200, (height/2 + heightFactor) + 60, false); 
 
     textAlign (LEFT); 
     text ("hit the lever to continue", locOneX, locOneY + 300); 

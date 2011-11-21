@@ -10,6 +10,7 @@ class Item {
   int xPosExitBack, xPosBack; 
   int disappear; 
   PImage picTop, picBot;
+  int picSizeX, picSizeY; 
 
   //float locX, locY; 
 
@@ -21,10 +22,12 @@ class Item {
     xPosBack = width;
     disappear = 100; 
     textAlign (CENTER);
+    picSizeX = 230;
+    picSizeY = 128; 
   }
 
   void displayName (float locX, float locY, boolean blinkOn) {
-    textSize (30); 
+    textSize (50); 
 
     if (blinkOn) {
       if (frameCount % 100 < 35) {
@@ -42,12 +45,12 @@ class Item {
         if (blinkOn) {
       if (frameCount % 100 < 50) {
         fill(0);  
-        image (picTop, locX, locY);
+        image (picTop,  locX, locY,picSizeX, picSizeY );
       }
     } 
     else {
       fill(0);  
-      image (picTop, locX, locY);
+      image (picTop, locX, locY,picSizeX, picSizeY);
     }
     
     
@@ -57,12 +60,12 @@ class Item {
         if (blinkOn) {
       if (frameCount % 100 < 50) {
         fill(0);  
-        image (picBot, locX, locY);
+        image (picBot, locX, locY,picSizeX, picSizeY);
       }
     } 
     else {
       fill(0);  
-      image (picBot, locX, locY);
+      image (picBot, locX, locY,picSizeX, picSizeY);
     }
     
     
