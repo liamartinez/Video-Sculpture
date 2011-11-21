@@ -14,12 +14,19 @@ int inByte;  //values from arduino
 int initVal; //calibrated initial value
 int bigSwitch; //switchpin
 
-Item[] items = new Item[25]; //array size
+Item[] items = new Item[40]; //array size
 int dial; 
 int chosenOne, chosenTwo;
 
-PFont font; 
+//visuals
+PImage [] bottoms = new PImage[items.length];
+PImage [] tops = new PImage[items.length];
+
+PFont didot;
+PFont didotItalic;
+
 int locOneX, locOneY; 
+int heightFactor; 
 
 int state; 
 
@@ -36,7 +43,8 @@ int itemTwoX, itemTwoY;
 
 //--------------------------------------------------------------------------------
 void setup () {
-  size (768, 1024); 
+  size (800, 480); 
+  imageMode (CENTER); 
 
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
@@ -52,10 +60,16 @@ void setup () {
   initVal = 0;
   last = millis(); 
 
-
   smooth(); 
-  font = loadFont ("SansSerif-48.vlw"); 
-  textFont(font, 48); 
+  didot = loadFont ("Didot-48.vlw");   
+  didotItalic = loadFont ("Didot-Italic-48.vlw"); 
+  textFont(didot, 48); 
+
+
+  for (int i = 0; i < items.length; i++) {
+    tops[i] = loadImage ("top_" + i + ".jpg");
+    bottoms[i] = loadImage ("bot_" + i + ".jpg");
+  }
 
   for (int i = 0; i < items.length; i++) {
     items[i] = new Item();
@@ -64,6 +78,8 @@ void setup () {
     items[i].suffix = suffixes[i]; 
     items[i].description = descriptions[i]; 
     items[i].price = float(price[i]); 
+    items[i].picTop = tops[i]; 
+    items[i].picBot = bottoms[i]; 
     println (i+ " " + items[i].name);
   }
 
@@ -76,13 +92,13 @@ void setup () {
 
   isItOn = 0; 
   wasItOn = 0; 
-  
+
   factorForward = 5;
   factorBackward = 5;  
-  interval = 1200;
-  
- randomItem = int(random(0, items.length)); 
+  interval = 500;
+  heightFactor = 140; 
 
+  randomItem = int(random(0, items.length));
 }
 
 //--------------------------------------------------------------------------------
@@ -90,48 +106,55 @@ void setup () {
 void draw () {
   background (255); 
 
+  //image (items[dial].picTop, 0, 0);
   setInit(); //set initial rotation value 
-  
+
   println ("initvalue is " + initVal + " inbyte is " + inByte); 
-  
+
   theDial();
   println ("dial number " + dial); 
   theSwitch (); 
-   
 
-  displayState(); 
-  
+
+  displayState();
 }
 
 
 //--------------------------------------------------------------------------------
 void displayState () {
-  
+
   switch (state) {
 
   case 0:  
     //choose the first
     textAlign (CENTER); 
-    
-    animateDial(height/2 - 15);  //the height is the only variable you need to change
+
+    //animateDial(height/2 - heightFactor, true);  //the height is the only variable you need to change
     //lastDial = dial; 
     ;
-    items[randomItem].displayName (width/2, height/2 + 15, false); 
+    //items[randomItem].displayName (width/2, height/2 + 15, false); 
+    items[dial].displayPicTop (width/2, height/2 - heightFactor, true); 
+    items[randomItem].displayPicBot (width/2, height/2 + heightFactor, false); 
 
     break; 
 
   case 1:
     //first chosen, choose the second
-    items[chosenOne].displayName (width/2, height/2 - 15, false); 
-    animateDial(height/2 + 15); 
+    //items[chosenOne].displayName (width/2, height/2 - 15, false); 
+    items[chosenOne].displayPicTop (width/2, height/2 - heightFactor, false); 
+    //animateDial(height/2 + heightFactor, false); 
+    items[dial].displayPicBot (width/2, height/2 + heightFactor, true); 
 
     break; 
 
   case 2: 
     //first chosen, second chosen
-    items[chosenOne].displayName (width/2, height/2 - 15, false); 
-    items[chosenTwo].displayName (width/2, height/2 + 15, false); 
-    
+    //items[chosenOne].displayName (width/2, height/2 - 15, false); 
+    //items[chosenTwo].displayName (width/2, height/2 + 15, false); 
+
+    items[chosenOne].displayPicTop (width/2, height/2 - heightFactor, false); 
+    items[chosenTwo].displayPicBot (width/2, height/2 + heightFactor, false); 
+
     textAlign (LEFT); 
     text ("hit the lever to continue", locOneX, locOneY + 300); 
 
@@ -139,16 +162,16 @@ void displayState () {
 
   case 3:
     //last page
-   
+
     textSize (20); 
     textAlign (CENTER); 
-    text (items[chosenOne].name + " : " + items[chosenOne].price,  locOneX, locOneY - 60);
+    text (items[chosenOne].name + " : " + items[chosenOne].price, locOneX, locOneY - 60);
     text (items[chosenTwo].name + " : " + items[chosenTwo].price, locOneX, locOneY - 30); 
     textAlign (LEFT); 
     text ("you got a " + items[chosenOne].prefix + items[chosenTwo].suffix, locOneX, locOneY+30); 
     text ("total cost: " + (items[chosenOne].price + items[chosenTwo].price), locOneX, locOneY+60); 
     text ("it is " + items[chosenOne].description + " and " + items[chosenTwo].description, locOneX, locOneY+90); 
-    
+
     dial = int(random (0, items.length)); 
     break;
   }
@@ -157,31 +180,30 @@ void displayState () {
 
 // ------------------------------------------------------------------------------
 
-void animateDial (int heightVar_) {
-      
-      //if the dial is going forward do this
-      if (forward == true) {
-      items[dial].animateEntry( heightVar_); 
-      if ((dial-1) > 0) {              
-        items[dial-1].animateExit( heightVar_);
-      } 
-      else {
-        items[items.length-1].animateExit( heightVar_); //if the dial is less than 0, then loopback to the end
-      }
-      //println ("forward!");
-    } 
-      //if the dial is going backwards do this
-    else {
-      items[dial].animateEntryBackward( heightVar_); 
-      if ((dial + 1) < items.length-1) { 
-        items[dial+1].animateExitBackward( heightVar_);
-      } 
-      else {
-        items[0].animateExitBackward( heightVar_);      //if the dial is greater than the maximum, loop back to the beginning
-      }
-      //println ("backward");
-    } 
+void animateDial (int heightVar_, boolean onTop_) {
 
+  //if the dial is going forward do this
+  if (forward == true) {
+    items[dial].animateEntry( heightVar_, onTop_); 
+    if ((dial-1) > 0) {              
+      items[dial-1].animateExit( heightVar_, onTop_ );
+    } 
+    else {
+      items[items.length-1].animateExit( heightVar_, onTop_); //if the dial is less than 0, then loopback to the end
+    }
+    //println ("forward!");
+  } 
+  //if the dial is going backwards do this
+  else {
+    items[dial].animateEntryBackward( heightVar_, onTop_); 
+    if ((dial + 1) < items.length-1) { 
+      items[dial+1].animateExitBackward( heightVar_, onTop_);
+    } 
+    else {
+      items[0].animateExitBackward( heightVar_, onTop_);      //if the dial is greater than the maximum, loop back to the beginning
+    }
+    //println ("backward");
+  }
 }
 
 //--------------------------------------------------------------------------------
@@ -228,32 +250,32 @@ void theDial () {
 
   while (millis () -last > interval) {  // while the current timer is greater than interval
     if (inByte > (initVal + factorForward)) {     // if the rotation is this much over initial value
-    //if ((inByte - initVal) > factorForward) {
+      //if ((inByte - initVal) > factorForward) {
       if (dial < (items.length-1)) {    //if dial is at the max number  
         dial ++;        //go up the dial
-              println ("                                   move forward"); 
+        println ("                                   move forward");
       } 
       else {
         dial = 0;                       // loopback to 0
-              println ("                                   move forward"); 
+        println ("                                   move forward");
       }
-               // last = millis();                  //reset the timer
+      // last = millis();                  //reset the timer
       forward = true;
     }
-    else if(inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
-    //if ((initVal - inByte) > factorBackward) {
+    else if (inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
+      //if ((initVal - inByte) > factorBackward) {
       if (dial != 0) {                  // if dial is at 0
         dial --;                        // go down the dial
-        println ("                                         move backward"); 
+        println ("                                         move backward");
       } 
       else {
         dial = (items.length-1);       //loopback to the max
-        println ("                                         move backward"); 
+        println ("                                         move backward");
       }
       forward = false;
-           // last = millis();                  //reset the timer
+      // last = millis();                  //reset the timer
     }
-         last = millis();                  //reset the timer
+    last = millis();                  //reset the timer
   }
 }
 

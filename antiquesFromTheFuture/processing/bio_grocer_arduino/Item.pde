@@ -9,6 +9,7 @@ class Item {
   int xPosExit, yPosexit;
   int xPosExitBack, xPosBack; 
   int disappear; 
+  PImage picTop, picBot;
 
   //float locX, locY; 
 
@@ -26,7 +27,7 @@ class Item {
     textSize (30); 
 
     if (blinkOn) {
-      if (frameCount % 100 < 50) {
+      if (frameCount % 100 < 35) {
         fill(0);  
         text (name, locX, locY);
       }
@@ -37,6 +38,37 @@ class Item {
     }
   }
 
+  void displayPicTop (float locX, float locY, boolean blinkOn) {
+        if (blinkOn) {
+      if (frameCount % 100 < 50) {
+        fill(0);  
+        image (picTop, locX, locY);
+      }
+    } 
+    else {
+      fill(0);  
+      image (picTop, locX, locY);
+    }
+    
+    
+  }
+  
+    void displayPicBot (float locX, float locY, boolean blinkOn) {
+        if (blinkOn) {
+      if (frameCount % 100 < 50) {
+        fill(0);  
+        image (picBot, locX, locY);
+      }
+    } 
+    else {
+      fill(0);  
+      image (picBot, locX, locY);
+    }
+    
+    
+  }
+
+
   String getSuffix () {
     return suffix;
   }
@@ -45,38 +77,73 @@ class Item {
     return prefix;
   }
 
-  void animateEntry (int heightVar) {
+  void animateEntry (int heightVar, boolean onTop) {
     // --> this way
     fill(255, 0, 0); 
-    text (name, xPos, heightVar); 
+    //text (name, xPos, heightVar); 
+
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
+
+
     if (xPos < width/2) {
       xPos = xPos + 10;
     }
   }
 
-  void animateExit (int heightVar) {
+  void animateExit (int heightVar, boolean onTop) {
     // --> this way
     fill (255, 0, 0);
-    text (name, xPosExit, heightVar); 
+    //text (name, xPosExit, heightVar); 
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
 
     if (xPosExit < width + disappear) {
       xPosExit = xPosExit + 10;
     }
   }
 
-  void animateEntryBackward (int heightVar) {
+  void animateEntryBackward (int heightVar, boolean onTop) {
     // <-- this way  
     fill(255, 0, 0); 
-    text (name, xPosBack, heightVar); 
+    //text (name, xPosBack, heightVar); 
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
     if (xPosBack > width/2) {
       xPosBack = xPosBack - 10;
     }
   }
 
-  void animateExitBackward (int heightVar) {
+  void animateExitBackward (int heightVar, boolean onTop) {
     // <-- this way 
     fill (255, 0, 0);
-    text (name, xPosExitBack, heightVar); 
+    //text (name, xPosExitBack, heightVar); 
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
 
     if (xPosExitBack > 0 - (disappear * 2 )) {
       xPosExitBack = xPosExitBack - 10;
