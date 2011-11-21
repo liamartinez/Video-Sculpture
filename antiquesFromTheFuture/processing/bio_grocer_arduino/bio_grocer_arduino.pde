@@ -1,8 +1,8 @@
 //google code
 SimpleSpreadsheetManager sm;
 String sUrl = "0AurJ3F3c5fapdGJJZVlsNklsUFVMWW5BNDlTZE05eGc"; 
-String googleUser = "sushionthego";
-String googlePass = "tortor07185";
+String googleUser = "typewritergenie";
+String googlePass = "gen0type";
 
 //serial
 import processing.serial.*;
@@ -36,7 +36,7 @@ int itemTwoX, itemTwoY;
 
 //--------------------------------------------------------------------------------
 void setup () {
-  size (600, 800); 
+  size (768, 1024); 
 
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
@@ -51,7 +51,7 @@ void setup () {
   myPort.bufferUntil('\n');
   initVal = 0;
   last = millis(); 
-  interval = 500;
+
 
   smooth(); 
   font = loadFont ("SansSerif-48.vlw"); 
@@ -77,8 +77,9 @@ void setup () {
   isItOn = 0; 
   wasItOn = 0; 
   
-  factorForward = 2;
-  factorBackward = 2;  
+  factorForward = 5;
+  factorBackward = 5;  
+  interval = 1200;
   
  randomItem = int(random(0, items.length)); 
 
@@ -93,8 +94,10 @@ void draw () {
   
   println ("initvalue is " + initVal + " inbyte is " + inByte); 
   
+  theDial();
+  println ("dial number " + dial); 
   theSwitch (); 
-  theDial(); 
+   
 
   displayState(); 
   
@@ -109,7 +112,10 @@ void displayState () {
   case 0:  
     //choose the first
     textAlign (CENTER); 
+    
     animateDial(height/2 - 15);  //the height is the only variable you need to change
+    //lastDial = dial; 
+    ;
     items[randomItem].displayName (width/2, height/2 + 15, false); 
 
     break; 
@@ -222,28 +228,34 @@ void theDial () {
 
   while (millis () -last > interval) {  // while the current timer is greater than interval
     if (inByte > (initVal + factorForward)) {     // if the rotation is this much over initial value
+    //if ((inByte - initVal) > factorForward) {
       if (dial < (items.length-1)) {    //if dial is at the max number  
         dial ++;        //go up the dial
+              println ("                                   move forward"); 
       } 
       else {
         dial = 0;                       // loopback to 0
+              println ("                                   move forward"); 
       }
-      println ("move forward"); 
+               // last = millis();                  //reset the timer
       forward = true;
     }
-    else if (inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
+    else if(inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
+    //if ((initVal - inByte) > factorBackward) {
       if (dial != 0) {                  // if dial is at 0
         dial --;                        // go down the dial
+        println ("                                         move backward"); 
       } 
       else {
         dial = (items.length-1);       //loopback to the max
+        println ("                                         move backward"); 
       }
       forward = false;
+           // last = millis();                  //reset the timer
     }
-    last = millis();                  //reset the timer
+         last = millis();                  //reset the timer
   }
 }
-
 
 
 //-------------------------------------------------------------------------------
@@ -279,12 +291,11 @@ void serialEvent(Serial myPort) {
 }
 
 
-
 //--------------------------------------------------------------------------------
 
 //set initial value if timer is after 3 seconds from startup
 void setInit () {
-  if ((millis() > 3000) && (initVal == 0)) {
+  if ((millis() > 8000) && (initVal == 0)) {
     initVal = inByte;
     dial = randomItem;
   }
