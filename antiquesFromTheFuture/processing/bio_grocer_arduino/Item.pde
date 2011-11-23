@@ -4,6 +4,7 @@ class Item {
   String prefix; 
   String suffix; 
   String description;
+  String action; 
   float price;
   int xPos, yPos; 
   int xPosExit, yPosexit;

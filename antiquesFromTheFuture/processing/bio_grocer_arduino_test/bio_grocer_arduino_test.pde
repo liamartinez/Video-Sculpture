@@ -90,7 +90,7 @@ void draw () {
         dial = 0;                       // loopback to 0
       }
       println ("plus 5");  
-      last = millis();                  //reset the timer
+                  //reset the timer
     }
     else if (inByte == (initVal - 3)) { // if the rotation is this much less than initial value
       if (dial != 0) {                  // if dial is at 0
@@ -100,8 +100,9 @@ void draw () {
         dial = (items.length-1);       //loopback to the max
       }
       println ("minus 3");
-      last = millis();                  //reset the timer
+                     //reset the timer
     }
+     last = millis();  
   }
 
 

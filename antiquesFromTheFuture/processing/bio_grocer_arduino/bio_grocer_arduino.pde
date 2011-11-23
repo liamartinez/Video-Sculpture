@@ -15,6 +15,8 @@ int initVal; //calibrated initial value
 int bigSwitch; //switchpin
 
 Item[] items = new Item[40]; //array size
+String[] verbs = new String [5];
+
 int dial; 
 int chosenOne, chosenTwo;
 
@@ -22,9 +24,14 @@ int chosenOne, chosenTwo;
 PImage [] bottoms = new PImage[items.length];
 PImage [] tops = new PImage[items.length];
 PImage logo; 
+PImage receipt; 
+PImage coupon; 
+int dottedStartX, dottedEndX, dottedStartY, dottedEndY; 
+int wordSize, wordLeading, wordDist; 
 
 PFont didot;
 PFont didotItalic;
+PFont didotBold; 
 
 int locOneX, locOneY; 
 int heightFactor; 
@@ -53,6 +60,9 @@ void setup () {
   String[] suffixes = getNumbers ("suffix"); 
   String[] descriptions = getNumbers ("description"); 
   String[] price = getNumbers ("price"); 
+  String[]actions = getNumbers ("actions"); 
+  
+  verbs = getNumbers ("verbs"); 
 
   println(Serial.list());
   String portName = Serial.list()[0];
@@ -64,8 +74,11 @@ void setup () {
   smooth(); 
   didot = loadFont ("Didot-48.vlw");   
   didotItalic = loadFont ("Didot-Italic-48.vlw"); 
-  textFont(didot, 48); 
+  didotBold = loadFont ("Didot-Bold-48.vlw"); 
+  
   logo = loadImage ("geno_logo.jpg"); 
+  receipt = loadImage ("geno_receipt.jpg"); 
+  coupon = loadImage ("genotypus.jpg"); 
 
   for (int i = 0; i < items.length; i++) {
     tops[i] = loadImage ("top_" + i + ".jpg");
@@ -82,6 +95,7 @@ void setup () {
     items[i].price = float(price[i]); 
     items[i].picTop = tops[i]; 
     items[i].picBot = bottoms[i]; 
+    items[i].action = actions[i]; 
     println (i+ " " + items[i].name);
   }
 
@@ -95,8 +109,8 @@ void setup () {
   isItOn = 0; 
   wasItOn = 0; 
 
-  factorForward = 5;
-  factorBackward = 5;  
+  factorForward = 4;
+  factorBackward = 4;  
   interval = 500;
   heightFactor = 63; 
 
@@ -107,19 +121,19 @@ void setup () {
 
 void draw () {
   background (255); 
-  imageMode (CORNER); 
-  image (logo, 0,0); 
+  
+  //image (logo, 0,0); 
 
-  //image (items[dial].picTop, 0, 0);
+
   setInit(); //set initial rotation value 
 
-  println ("initvalue is " + initVal + " inbyte is " + inByte); 
+  //println ("initvalue is " + initVal + " inbyte is " + inByte); 
 
   theDial();
-  println ("dial number " + dial); 
+  //println ("dial number " + dial); 
   theSwitch (); 
 
-  imageMode (CENTER); 
+ 
   displayState();
 }
 
@@ -131,11 +145,14 @@ void displayState () {
 
   case 0:  
     //choose the first
-    textAlign (CENTER); 
+    textAlign (CENTER);
+    textFont(didot, 48); 
+    imageMode (CORNER);  
+    image (logo, 0,0);
 
     //animateDial(height/2 - heightFactor, true);  //the height is the only variable you need to change
     //lastDial = dial; 
-    
+    imageMode (CENTER); 
     //items[randomItem].displayName (width/2, height/2 + 15, false); 
     items[dial].displayPicTop (width/2, (height/2 - heightFactor) +60 , true); 
     items[dial].displayName (width/2 - 200,  (height/2-5) +60 , true); 
@@ -143,14 +160,24 @@ void displayState () {
     items[randomItem].displayPicBot (width/2, (height/2 + heightFactor) + 60, false); 
     items[randomItem].displayName (width/2 + 200, (height/2+30) + 60, false); 
 
+    textAlign (LEFT); 
+    textSize (30); 
+    text ("Please make your selection", locOneX, locOneY + 300); 
     break; 
 
   case 1:
     //first chosen, choose the second
     //items[chosenOne].displayName (width/2, height/2 - 15, false); 
-    items[chosenOne].displayPicTop (width/2 - 200, (height/2 - heightFactor) + 60, false); 
     //animateDial(height/2 + heightFactor, false); 
-    items[dial].displayPicBot (width/2 + 200, (height/2 + heightFactor) + 60, true); 
+    imageMode (CORNER);
+    image (logo, 0,0);
+    
+    imageMode (CENTER);
+    items[chosenOne].displayPicTop (width/2, (height/2 - heightFactor) +60 , false); 
+    items[chosenOne].displayName (width/2 - 200,  (height/2-5) +60 , false); 
+    
+    items[dial].displayPicBot (width/2, (height/2 + heightFactor) + 60, true); 
+    items[dial].displayName (width/2 + 200, (height/2+30) + 60, true); 
 
     break; 
 
@@ -158,26 +185,69 @@ void displayState () {
     //first chosen, second chosen
     //items[chosenOne].displayName (width/2, height/2 - 15, false); 
     //items[chosenTwo].displayName (width/2, height/2 + 15, false); 
-
-    items[chosenOne].displayPicTop (width/2 - 200, (height/2 - heightFactor) + 60, false); 
-    items[chosenTwo].displayPicBot (width/2 + 200, (height/2 + heightFactor) + 60, false); 
+    textAlign (CENTER);
+    imageMode (CORNER);
+    image (logo, 0,0);
+    
+    imageMode (CENTER);
+    items[chosenOne].displayPicTop (width/2, (height/2 - heightFactor) +60 , false); 
+    items[chosenOne].displayName (width/2 - 200,  (height/2-5) +60 , false); 
+    
+    items[chosenTwo].displayPicBot (width/2, (height/2 + heightFactor) + 60, false); 
+    items[chosenTwo].displayName (width/2 + 200, (height/2+30) + 60, false); 
 
     textAlign (LEFT); 
-    text ("hit the lever to continue", locOneX, locOneY + 300); 
+    textSize (30); 
+    text ("Hit the lever to continue", locOneX, locOneY + 300); 
 
     break;
 
   case 3:
     //last page
-
-    textSize (20); 
-    textAlign (CENTER); 
-    text (items[chosenOne].name + " : " + items[chosenOne].price, locOneX, locOneY - 60);
-    text (items[chosenTwo].name + " : " + items[chosenTwo].price, locOneX, locOneY - 30); 
-    textAlign (LEFT); 
-    text ("you got a " + items[chosenOne].prefix + items[chosenTwo].suffix, locOneX, locOneY+30); 
-    text ("total cost: " + (items[chosenOne].price + items[chosenTwo].price), locOneX, locOneY+60); 
-    text ("it is " + items[chosenOne].description + " and " + items[chosenTwo].description, locOneX, locOneY+90); 
+    dottedStartX = 280; 
+    dottedStartY = 140; 
+    dottedEndX = 560; 
+    wordSize = 15; 
+    wordLeading = 20; 
+    wordDist = 20; 
+    
+    textAlign (LEFT);
+    
+    imageMode (CORNER);
+    image (receipt, 0,0);
+    textSize (wordSize); 
+    
+    text (items[chosenOne].name, dottedStartX, dottedStartY);
+    text (items[chosenTwo].name, dottedStartX, dottedStartY + wordDist); 
+    text ("Style Fee",dottedStartX, dottedStartY + wordDist*2); 
+    
+    text ("Coupon Code", dottedStartX, dottedStartY + wordDist*4); 
+    imageMode (CENTER);
+    image (coupon, dottedStartX + 140, dottedStartY + (wordDist*4)-5); 
+    imageMode (CORNER);
+     
+    textFont(didotItalic,wordSize); 
+    textLeading (wordLeading); 
+    textAlign (CENTER);
+    text ("..................................",dottedStartX, dottedStartY + wordDist*5, 240, 500);
+    textAlign (LEFT);
+    //textFont(didotBold,wordSize); 
+    text ("Our deepest Congratulations! It’s a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!", dottedStartX, dottedStartY + wordDist*6, 240, 500); 
+    textFont(didotItalic,wordSize); 
+    text ("     It is " + items[chosenOne].description + " and " + items[chosenTwo].description + ", and will probably " + verbs[0] + " " + items[chosenOne].action + " and " + items[chosenTwo].action + " with you.", dottedStartX,  dottedStartY + wordDist*8, 240, 500); 
+    
+    
+    textFont(didotItalic,wordSize - 3); 
+    text (" Your pup will arrive in approx. 5 minutes in your local bio tube repository.", dottedStartX, dottedStartY + wordDist*13, 240, 500); 
+    
+      //textLeading (wordLeading-5); 
+    //text (" Need faster imprinting? Register today with our DNA play for quick impression between pup & parent. Also look for our new intelligence plus GenoTypewriter coming out next fall with a full featured intelligence augmenter! Upload your intelligence into your next " + items[chosenOne].prefix + items[chosenTwo].suffix + "!", dottedStartX, dottedStartY + wordDist*13, 240, 500); 
+    textAlign(RIGHT); 
+    textFont(didotItalic,wordSize); 
+      text ( " ..........................  $ " + items[chosenOne].price, dottedStartX + 240, dottedStartY);
+    text ( " ..........................  $ " + items[chosenTwo].price, dottedStartX + 240, dottedStartY + wordDist); 
+    text (  " ..........................  $ " + "% 10.00", dottedStartX + 240, dottedStartY  + wordDist*2); 
+    text ("Total $" + (items[chosenOne].price + items[chosenTwo].price), 620, dottedStartY + wordDist*5); 
 
     dial = int(random (0, items.length)); 
     break;
@@ -255,7 +325,7 @@ void theSwitch () {
 //--------------------------------------------------------------------------------
 void theDial () {
 
-  while (millis () -last > interval) {  // while the current timer is greater than interval
+  //if (millis () -last > interval) {  // while the current timer is greater than interval
     if (inByte > (initVal + factorForward)) {     // if the rotation is this much over initial value
       //if ((inByte - initVal) > factorForward) {
       if (dial < (items.length-1)) {    //if dial is at the max number  
@@ -280,10 +350,10 @@ void theDial () {
         println ("                                         move backward");
       }
       forward = false;
-      // last = millis();                  //reset the timer
+       //last = millis();                  //reset the timer
     }
-    last = millis();                  //reset the timer
-  }
+    //last = millis();                  //reset the timer
+  //}
 }
 
 
@@ -318,9 +388,8 @@ void serialEvent(Serial myPort) {
     myPort.write("A");
   }
 }
+//-------------------------------------------------------------------------------
 
-
-//--------------------------------------------------------------------------------
 
 //set initial value if timer is after 3 seconds from startup
 void setInit () {
@@ -332,3 +401,7 @@ void setInit () {
 
 //--------------------------------------------------------------------------------
 
+void mouseClicked () {
+println (mouseX + ","+ mouseY); 
+
+}
