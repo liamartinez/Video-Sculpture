@@ -52,8 +52,8 @@ int itemTwoX, itemTwoY;
 //--------------------------------------------------------------------------------
 void setup () {
   size (800, 480); 
+  smooth(); 
   
-
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
   String[] prefixes = getNumbers("prefix"); 
@@ -68,10 +68,8 @@ void setup () {
   String portName = Serial.list()[0];
   myPort = new Serial(this, portName, 9600);
   myPort.bufferUntil('\n');
-  initVal = 0;
   last = millis(); 
 
-  smooth(); 
   didot = loadFont ("Didot-48.vlw");   
   didotItalic = loadFont ("Didot-Italic-48.vlw"); 
   didotBold = loadFont ("Didot-Bold-48.vlw"); 
@@ -80,13 +78,15 @@ void setup () {
   receipt = loadImage ("geno_receipt.jpg"); 
   coupon = loadImage ("genotypus.jpg"); 
 
-  for (int i = 0; i < items.length; i++) {
-    tops[i] = loadImage ("top_" + i + ".jpg");
-    bottoms[i] = loadImage ("bot_" + i + ".jpg");
-  }
-  
+
 
   for (int i = 0; i < items.length; i++) {
+    
+    //load the pictures
+    tops[i] = loadImage ("top_" + i + ".jpg");
+    bottoms[i] = loadImage ("bot_" + i + ".jpg");
+    
+    //put them in the object
     items[i] = new Item();
     items[i].name = names[i]; 
     items[i].prefix = prefixes[i]; 
@@ -99,38 +99,36 @@ void setup () {
     println (i+ " " + items[i].name);
   }
 
-  state = 0; 
-  dial = 0; 
+  initVal = 0; //calibrated value
+  state = 0;   // level 
+  dial = 0;    
   locOneX = width/3-100;
   locOneY = height/3;
+  heightFactor = 63; 
   chosenOne = 0; 
   chosenTwo = 0;
 
   isItOn = 0; 
   wasItOn = 0; 
 
-  factorForward = 4;
-  factorBackward = 4;  
-  interval = 500;
-  heightFactor = 63; 
+  factorForward = 2;
+  factorBackward = 2;  
+  interval = 300; //time allowed between changes
 
-  randomItem = int(random(0, items.length));
+  randomItem = int(random(0, items.length)); //move this somewhere else - remember condom
 }
 
 //--------------------------------------------------------------------------------
 
 void draw () {
   background (255); 
-  
-  //image (logo, 0,0); 
-
 
   setInit(); //set initial rotation value 
+  
 
-  //println ("initvalue is " + initVal + " inbyte is " + inByte); 
+  println ("initvalue is " + initVal + " inbyte is " + inByte); 
 
   theDial();
-  //println ("dial number " + dial); 
   theSwitch (); 
 
  
@@ -148,7 +146,7 @@ void displayState () {
     textAlign (CENTER);
     textFont(didot, 48); 
     imageMode (CORNER);  
-    image (logo, 0,0);
+    image (logo, 100,0,600,150);
 
     //animateDial(height/2 - heightFactor, true);  //the height is the only variable you need to change
     //lastDial = dial; 
@@ -170,11 +168,11 @@ void displayState () {
     //items[chosenOne].displayName (width/2, height/2 - 15, false); 
     //animateDial(height/2 + heightFactor, false); 
     imageMode (CORNER);
-    image (logo, 0,0);
+    image (logo,100,0,600,150);
     
     imageMode (CENTER);
     items[chosenOne].displayPicTop (width/2, (height/2 - heightFactor) +60 , false); 
-    items[chosenOne].displayName (width/2 - 200,  (height/2-5) +60 , false); 
+    items[chosenOne].displayName (width/2 - 200,  (height/2+30) +60 , false); 
     
     items[dial].displayPicBot (width/2, (height/2 + heightFactor) + 60, true); 
     items[dial].displayName (width/2 + 200, (height/2+30) + 60, true); 
@@ -325,9 +323,12 @@ void theSwitch () {
 //--------------------------------------------------------------------------------
 void theDial () {
 
-  //if (millis () -last > interval) {  // while the current timer is greater than interval
+    
+  if (millis () -last > interval) {  // while the current timer is greater than interval
+
     if (inByte > (initVal + factorForward)) {     // if the rotation is this much over initial value
       //if ((inByte - initVal) > factorForward) {
+      last = millis();                  //reset the timer
       if (dial < (items.length-1)) {    //if dial is at the max number  
         dial ++;        //go up the dial
         println ("                                   move forward");
@@ -336,11 +337,12 @@ void theDial () {
         dial = 0;                       // loopback to 0
         println ("                                   move forward");
       }
-      // last = millis();                  //reset the timer
-      forward = true;
+ 
+      //forward = true;
     }
-    else if (inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
+    if (inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
       //if ((initVal - inByte) > factorBackward) {
+      last = millis();                  //reset the timer
       if (dial != 0) {                  // if dial is at 0
         dial --;                        // go down the dial
         println ("                                         move backward");
@@ -349,11 +351,14 @@ void theDial () {
         dial = (items.length-1);       //loopback to the max
         println ("                                         move backward");
       }
-      forward = false;
-       //last = millis();                  //reset the timer
+      //forward = false;
+
+
     }
-    //last = millis();                  //reset the timer
-  //}
+   
+
+
+  } 
 }
 
 
@@ -380,8 +385,8 @@ void serialEvent(Serial myPort) {
         //print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
         println();
       }
-      if (sensors.length > 1) {
-        inByte = sensors[0]; 
+      if (sensors.length > 1) {     
+        inByte = sensors[0];
         bigSwitch = sensors[1];
       }
     }
