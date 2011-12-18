@@ -4,11 +4,20 @@ String sUrl = "0AurJ3F3c5fapdGJJZVlsNklsUFVMWW5BNDlTZE05eGc";
 String googleUser = "typewritergenie";
 String googlePass = "gen0type";
 
+//fullscreen
+import fullscreen.*; 
+FullScreen fs; 
+
 //serial
 import processing.serial.*;
 Serial myPort;        
 float last, interval; 
 boolean firstContact = false; 
+
+//printer
+String wawa; 
+String congrats, product1, product2, total, description, thanks;  
+boolean printed; 
 
 int inByte;  //values from arduino
 int initVal; //calibrated initial value
@@ -51,8 +60,12 @@ int itemTwoX, itemTwoY;
 
 //--------------------------------------------------------------------------------
 void setup () {
-  size (800, 480); 
+  size (720, 480); 
   smooth(); 
+  
+  fs = new FullScreen(this); 
+   // enter fullscreen mode
+  //fs.enter(); 
   
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
@@ -78,7 +91,8 @@ void setup () {
   receipt = loadImage ("geno_receipt.jpg"); 
   coupon = loadImage ("genotypus.jpg"); 
 
-
+  //printer
+  printed = false; 
 
   for (int i = 0; i < items.length; i++) {
     
@@ -130,6 +144,7 @@ void draw () {
 
   theDial();
   theSwitch (); 
+  println (bigSwitch); 
  
   displayState();
 }
@@ -142,6 +157,7 @@ void displayState () {
 
   case 0:  
     //choose the first
+            
     textAlign (CENTER);
     textFont(didot, 48); 
     imageMode (CORNER);  
@@ -248,6 +264,21 @@ void displayState () {
     text ("Total $" + (items[chosenOne].price + items[chosenTwo].price), 620, dottedStartY + wordDist*5); 
 
     dial = int(random (0, items.length)); 
+    
+    
+    //prepare the text for the printer
+    congrats = "Our deepest Congratulations! It’s a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!"; 
+    product1 = items[chosenOne].name + " ............  $ " + items[chosenOne].price;
+    product2 = items[chosenTwo].name + " ............  $ " + items[chosenTwo].price;
+    total = " ....... Total $" + (items[chosenOne].price + items[chosenTwo].price); 
+    description = "     It is " + items[chosenOne].description + " and " + items[chosenTwo].description + ", and will probably " + verbs[0] + " " + items[chosenOne].action + " and " + items[chosenTwo].action + " with you.";
+    thanks = " Your pup will arrive in approx. 5 minutes in your local bio tube repository.";
+    
+    if (printed) {
+      printed = false; 
+      thermalPrintString(congrats + (char)'\n' + product1 + (char)'\n' + product2 + (char)'\n' + total + (char)'\n' +description+thanks); 
+    }
+    
     break;
   }
 }
@@ -281,13 +312,15 @@ void theSwitch () {
 
   case 1:
     if (chosenOne == -1) {
-      chosenOne = dial;
+      chosenOne = dial-1;
     } 
     break;
 
   case 2:
     if (chosenTwo == -1) {
-      chosenTwo = dial;
+      chosenTwo = dial-1;
+      //thermalPrintString(wawa + wawa); 
+      printed = true; 
     } 
     break;
   }
@@ -295,10 +328,9 @@ void theSwitch () {
 
 //--------------------------------------------------------------------------------
 void theDial () {
-
     
   if (millis () -last > interval) {  // while the current timer is greater than interval
-     println ("GO"); 
+    
     if (inByte > (initVal + factorForward)) {     // if the rotation is this much over initial value
       //if ((inByte - initVal) > factorForward) {
         println("********************************************things are changing"); 
@@ -314,8 +346,7 @@ void theDial () {
         dial = 0;                       // loopback to 0
         println ("                                   move forward");
       }
- 
-      //forward = true;
+       //forward = true;
     }
     if (inByte < (initVal - factorBackward)) { // if the rotation is this much less than initial value
       //if ((initVal - inByte) > factorBackward) {
@@ -330,12 +361,7 @@ void theDial () {
         println ("                                         move backward");
       }
       //forward = false;
-
-
     }
-   
-
-
   } 
 }
 
@@ -353,7 +379,7 @@ void serialEvent(Serial myPort) {
       if (myString.equals("hello")) { 
         myPort.clear();          // clear the serial port buffer
         firstContact = true;     // you've had first contact from the microcontroller
-        myPort.write('A');       // ask for more
+        myPort.write(1);       // ask for more
       }
     } 
     // if you have heard from the microcontroller, proceed:
@@ -366,9 +392,10 @@ void serialEvent(Serial myPort) {
       if (sensors.length > 1) {     
         inByte = sensors[0];
         bigSwitch = sensors[1];
+        println ("switch is " + bigSwitch); 
       }
     }
-    myPort.write("A");
+    myPort.write(1);
   }
 }
 //-------------------------------------------------------------------------------
@@ -388,3 +415,27 @@ void mouseClicked () {
 println (mouseX + ","+ mouseY); 
 
 }
+
+void mousePressed(){
+  
+
+thermalPrintString("Congratulations! You pressed the mouse."); 
+
+}
+//------------------------------------------------------------------------------
+
+void keyPressed () {
+if (key == 'f') {
+fs.enter(); 
+}
+
+}
+//--------------------------------------------------------------------------------
+void thermalPrintString(String toPrint){
+  for(int i = 0; i < toPrint.length(); i++){
+    myPort.write((byte)toPrint.charAt(i));
+  }
+  //myPort.write((byte)'\n');
+  myPort.write((byte)'2');
+}
+
