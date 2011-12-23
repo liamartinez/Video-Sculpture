@@ -35,6 +35,8 @@ PImage [] tops = new PImage[items.length];
 PImage logo; 
 PImage receipt; 
 PImage coupon; 
+PImage welcomePage;
+PImage instructionsPage; 
 int dottedStartX, dottedEndX, dottedStartY, dottedEndY; 
 int wordSize, wordLeading, wordDist; 
 
@@ -91,6 +93,8 @@ void setup () {
   logo = loadImage ("geno_logo.jpg"); 
   receipt = loadImage ("geno_receipt.jpg"); 
   coupon = loadImage ("genotypus.jpg"); 
+  instructionsPage = loadImage("standin_instruct.jpg"); 
+  welcomePage = loadImage ("standin_welcome.jpg");
 
   //printer
   printed = false; 
@@ -157,7 +161,17 @@ void displayState () {
 
   switch (state) {
 
-  case 0:  
+  case 0: 
+    // display welcome
+    image (welcomePage, 0, 0, width, height);
+    break; 
+
+  case 1:
+    // display instructions  
+    image (instructionsPage, 0, 0, width, height);
+    break; 
+
+  case 2:  
     //choose the first
 
     textAlign (CENTER);
@@ -174,10 +188,10 @@ void displayState () {
 
     textAlign (LEFT); 
     textSize (25); 
-    text ("Use the DIAL to pick a thing. Then hit the LEVER", locOneX-50, locOneY + 250); 
+    text ("Use the DIAL to pick a thing. Then hit the LEVER", locOneX-50, locOneY + 220); 
     break; 
 
-  case 1:
+  case 3:
 
     textAlign (CENTER);
     imageMode (CORNER);
@@ -192,12 +206,12 @@ void displayState () {
 
     textAlign (LEFT); 
     textSize (25); 
-    text ("Pick another thing, then hit the lever.", locOneX-50, locOneY + 250); 
+    text ("Pick another thing, then hit the lever.", locOneX-50, locOneY + 220); 
 
     break; 
 
-  case 2: 
-
+  case 4: 
+  
     textAlign (CENTER);
     imageMode (CORNER);
     image (logo, 0, 0, width, height/3);
@@ -211,11 +225,12 @@ void displayState () {
 
     textAlign (LEFT); 
     textSize (30); 
-    text ("Hit the lever to get your receipt", locOneX-50, locOneY + 250); 
-
+    text ("Great! Its a " + items[chosenOne].prefix + items[chosenTwo].suffix + " !", locOneX-50, locOneY + 200); 
+    text ("Hit the lever again for your receipt", locOneX-50, locOneY + 220); 
+    
     break;
 
-  case 3:
+  case 5:
     //last page
     dottedStartX = 280; 
     dottedStartY = 140; 
@@ -244,7 +259,7 @@ void displayState () {
     textAlign (CENTER);
     text ("..................................", dottedStartX, dottedStartY + wordDist*5, 240, 500);
     textAlign (LEFT);
-    textFont(didotBold,15); 
+    textFont(didotBold, 15); 
     text ("Our deepest Congratulations! It’s a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!", dottedStartX, dottedStartY + wordDist*6, 240, 500); 
     //textFont(didotItalic, wordSize); 
     // text ("     It is " + items[chosenOne].description + " and " + items[chosenTwo].description + ", and will probably " + verbs[0] + " " + items[chosenOne].action + " and " + items[chosenTwo].action + " with you.", dottedStartX,  dottedStartY + wordDist*8, 240, 500); 
@@ -263,7 +278,6 @@ void displayState () {
     text ("Total $" + (items[chosenOne].price + items[chosenTwo].price), 620, dottedStartY + wordDist*5); 
 
     dial = int(random (0, items.length)); 
-
 
     //prepare the text for the printer
     header = "******GENOTYPEWRITER*********"; 
@@ -293,85 +307,76 @@ void theSwitch () {
 
   isItOn = bigSwitch; 
 
- // if (switchHit) {
-    switchHit = false; 
-    if (isItOn != wasItOn) {
-      wasItOn = isItOn;
-      println ("SWITCH"); 
-      if (isItOn == 1) {
-        if (state < 3) {
-          state ++;
-        } 
-        else {
-          state = 0;
-           switchHit = true; 
-        }
+  if (isItOn != wasItOn) {
+    wasItOn = isItOn;
+    println ("SWITCH"); 
+    if (isItOn == 1) {
+      if (state < 5) {
+        state ++;
+      } 
+      else {
+        state = 0;
+        switchHit = true;
       }
-   // }
+    }
   }
 
 
 
 
   switch (state) {
-  case 0: 
+
+  case 2: 
     chosenOne = -1; 
     chosenTwo = -1;   
-    switchHit = true; 
 
     break; 
 
-  case 1:
+  case 3:
 
     if (chosenOne == -1) {
-//chosenOne = dial;
+      //chosenOne = dial;
 
-/*
+      /*
             if (dial > 0) {
-              chosenOne = dial-1;
-            } else {
-              chosenOne = items.length-1;
-          }
-          
-*/
+       chosenOne = dial-1;
+       } else {
+       chosenOne = items.length-1;
+       }
+       
+       */
 
-if (dial < items.length-1) {
-  chosenOne = dial+1;
-} else {
-  chosenOne = 0; 
-}
-      
+      if (dial < items.length-1) {
+        chosenOne = dial+1;
+      } 
+      else {
+        chosenOne = 0;
+      }
     } 
-    switchHit = true;
+
     break;
 
-  case 2:
+  case 4:
 
-
-
-
-    //thermalPrintString(wawa + wawa); 
-    
     if (chosenTwo == -1) {
       //chosenTwo = dial;   
-   /*
+      /*
                    if (dial > 0) {
-            chosenTwo = dial-1;
-          } else {
-            chosenTwo = items.length-1;
-          }   
-          
-      */
-      
+       chosenTwo = dial-1;
+       } else {
+       chosenTwo = items.length-1;
+       }   
+       
+       */
+
       if (dial < items.length-1) {
-  chosenTwo = dial+1;
-} else {
-  chosenTwo = 0; 
-}
-     
+        chosenTwo = dial+1;
+      } 
+      else {
+        chosenTwo = 0;
+      }
     } 
     printed = true;
-    switchHit = true; 
     break;
   }
 }
@@ -478,6 +483,9 @@ void mousePressed() {
 void keyPressed () {
   if (key == 'f') {
     fs.enter();
+  }   
+  if (key == 'F') {
+    fs.leave();
   } 
   else if (key == 'r') {
 

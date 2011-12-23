@@ -32,7 +32,7 @@ void setup(){
 }
 
 void loop(){
-  
+
   if (digitalRead(7) == HIGH) {
     // if the switch is closed:
     digitalWrite(6, HIGH);    // turn on the yellow LED
@@ -42,25 +42,32 @@ void loop(){
     // if the switch is open:
     digitalWrite(6, LOW);     // turn off the yellow LED
   }
-  
+
   if (digitalRead (cardPin) == HIGH) {
     digitalWrite(6, HIGH);
-  printer.feed();
-  inverseOn(); 
-  printer.println("Cavendish Trebuchet");
-  printer.println("GenoTypewriter");
-  inverseOff(); 
-  printer.feed();
-  printer.println("will-jennings.com");
-  printer.println("liamartinez.com");
-  printer.feed();
-  printer.printBarcode("24901090409", UPC_A);
-  printer.feed();
-  printer.feed();
-  printer.feed();
-  
+    //    printer.begin(); 
+    //  printer.inverseOn();
+    //  printer.print("inverse ON");
+    //  printer.inverseOff();  // this adds a line feed
+    printer.feed();
+    //inverseOn("thank you for your patronage"); 
+    printer.println("Cavendish Trebuchet");
+    printer.println("GenoTypewriter");
+    //inverseOff(); 
+    printer.feed();
+    printer.println("will-jennings.com");
+    printer.println("liamartinez.com");
+    printer.feed();
+    printer.printBarcode("24901090409", UPC_A);
+    printer.feed();
+    printer.feed();
+    printer.feed();
+    printer.feed();
+    printer.feed();
+    printer.feed();
+
   }
-  
+
 
 
   if(Serial.available()){
@@ -78,27 +85,27 @@ void loop(){
       // each set of four readings prints on a line by itself:
       Serial.println(sensorValue, DEC);
     } 
+    else if(raw == 2){
+      printer.println(out);
+      printer.feed();
+      //barcode 
+      printer.printBarcode("24901090409", UPC_A);
+      printer.feed();
+      printer.feed();
+
+      printer.feed();
+      printer.feed();
+      printer.feed();
+      printer.feed();
+      incoming = "";
+
+    }
     else {
-
-      char in = (char)raw;
-      if(in == '2'){
-        printer.println(out);
-        printer.feed();
-        //barcode 
-        printer.printBarcode("24901090409", UPC_A);
-        printer.feed();
-        printer.feed();
-        incoming = "";
-        printer.feed();
-        printer.feed();
-
-      }
-      else {
-        incoming += in;
-        out = &incoming[0];
-      }
+      incoming += (char)raw;
+      out = &incoming[0];
     }
   }
+
 }
 
 void establishContact() {
@@ -107,6 +114,7 @@ void establishContact() {
     delay(300);
   }
 }
+
 
 
 

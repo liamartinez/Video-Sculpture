@@ -12,7 +12,6 @@ char * out;
 const int switchPin = 7;      // digital input 
 const int cardPin = 8;
 
-
 int sensorValue;
 String barcode; 
 
@@ -24,10 +23,10 @@ void setup(){
   Serial.println("setup");
 
   pinMode(6, OUTPUT);   // set the yellow LED pin to be an output
-  //pinMode(7, INPUT);   
-  pinMode (cardPin, INPUT); 
+  pinMode(7, INPUT);   // set the yellow LED pin to be an output
 
   pinMode(switchPin, INPUT);
+  pinMode (cardPin, INPUT); 
   establishContact();
 }
 
@@ -38,29 +37,37 @@ void loop(){
     digitalWrite(6, HIGH);    // turn on the yellow LED
 
   } 
-  else {
+  else  {
     // if the switch is open:
     digitalWrite(6, LOW);     // turn off the yellow LED
-  }
-  
-  if (digitalRead (cardPin) == HIGH) {
+  } if (digitalRead (cardPin) == HIGH) {
     digitalWrite(6, HIGH);
-  printer.feed();
-  inverseOn(); 
-  printer.println("Cavendish Trebuchet");
-  printer.println("GenoTypewriter");
-  inverseOff(); 
-  printer.feed();
-  printer.println("will-jennings.com");
-  printer.println("liamartinez.com");
-  printer.feed();
-  printer.printBarcode("24901090409", UPC_A);
-  printer.feed();
-  printer.feed();
-  printer.feed();
-  
+    //    printer.begin(); 
+    //  printer.inverseOn();
+    //  printer.print("inverse ON");
+    //  printer.inverseOff();  // this adds a line feed
+    printer.feed();
+    //inverseOn("thank you for your patronage"); 
+    printer.println("Cavendish Trebuchet");
+    printer.println("GenoTypewriter");
+    //inverseOff(); 
+    printer.feed();
+    printer.println("will-jennings.com");
+    printer.println("liamartinez.com");
+    printer.feed();
+    printer.printBarcode("24901090409", UPC_A);
+    printer.feed();
+    printer.feed();
+    printer.feed();
+    printer.feed();
+    printer.feed();
+    
+    printer.feed();
+    printer.feed();
+    printer.feed();
+
   }
-  
+
 
 
   if(Serial.available()){
@@ -81,7 +88,7 @@ void loop(){
     else {
 
       char in = (char)raw;
-      if(in == '2'){
+      if(in == 9){
         printer.println(out);
         printer.feed();
         //barcode 
@@ -89,6 +96,10 @@ void loop(){
         printer.feed();
         printer.feed();
         incoming = "";
+        printer.feed();
+        printer.feed();
+        printer.feed();
+        printer.feed();
         printer.feed();
         printer.feed();
 
