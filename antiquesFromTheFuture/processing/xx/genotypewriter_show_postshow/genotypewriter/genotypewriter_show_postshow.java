@@ -1,12 +1,75 @@
-/*
+import processing.core.*; 
 
-GenoTypewriter
-Lia Martinez && William Jennings
+import fullscreen.*; 
+import processing.serial.*; 
+import com.google.gdata.client.spreadsheet.*; 
+import com.google.gdata.data.*; 
+import com.google.gdata.data.spreadsheet.*; 
+import com.google.gdata.util.*; 
+import java.io.BufferedReader; 
+import java.io.IOException; 
+import java.io.InputStreamReader; 
+import java.io.PrintStream; 
+import java.net.URL; 
+import java.util.HashMap; 
+import java.util.List; 
+import java.util.Map; 
 
-ITP 2012
+import com.google.gdata.data.geo.*; 
+import com.google.gdata.data.spreadsheet.*; 
+import org.apache.commons.codec.language.*; 
+import org.apache.commons.httpclient.auth.*; 
+import com.google.gdata.util.common.xml.*; 
+import com.google.gdata.data.apt.*; 
+import org.apache.commons.httpclient.methods.*; 
+import twitter4j.org.json.*; 
+import com.google.gdata.client.batch.*; 
+import com.google.gdata.data.*; 
+import com.google.gdata.client.*; 
+import com.google.gdata.util.common.util.*; 
+import twitter4j.*; 
+import org.apache.commons.codec.*; 
+import org.apache.commons.codec.digest.*; 
+import org.apache.commons.httpclient.*; 
+import org.apache.commons.httpclient.cookie.*; 
+import org.apache.commons.httpclient.methods.multipart.*; 
+import com.google.gdata.util.common.base.*; 
+import com.google.gdata.util.*; 
+import com.google.gdata.data.acl.*; 
+import twitter4j.http.*; 
+import com.google.gdata.client.spreadsheet.*; 
+import com.google.gdata.data.introspection.*; 
+import org.apache.commons.logging.*; 
+import com.google.gdata.util.common.html.*; 
+import org.apache.commons.httpclient.protocol.*; 
+import com.google.gdata.util.httputil.*; 
+import com.google.gdata.client.http.*; 
+import org.apache.commons.logging.impl.*; 
+import com.google.gdata.data.geo.impl.*; 
+import org.apache.commons.codec.net.*; 
+import twitter4j.examples.*; 
+import com.google.gdata.util.io.base.*; 
+import com.google.gdata.data.batch.*; 
+import org.apache.commons.httpclient.params.*; 
+import org.apache.commons.codec.binary.*; 
+import org.apache.commons.httpclient.util.*; 
+import com.google.gdata.data.extensions.*; 
 
-*/
+import java.applet.*; 
+import java.awt.Dimension; 
+import java.awt.Frame; 
+import java.awt.event.MouseEvent; 
+import java.awt.event.KeyEvent; 
+import java.awt.event.FocusEvent; 
+import java.awt.Image; 
+import java.io.*; 
+import java.net.*; 
+import java.text.*; 
+import java.util.*; 
+import java.util.zip.*; 
+import java.util.regex.*; 
 
+public class genotypewriter_show_postshow extends PApplet {
 
 //google code
 SimpleSpreadsheetManager sm;
@@ -15,11 +78,11 @@ String googleUser = "typewritergenie";
 String googlePass = "gen0type";
 
 //fullscreen
-import fullscreen.*; 
+ 
 FullScreen fs; 
 
 //serial
-import processing.serial.*;
+
 Serial myPort;        
 float last, interval; 
 boolean firstContact = false; 
@@ -78,7 +141,7 @@ int itemOneX, itemOneY;
 int itemTwoX, itemTwoY; 
 
 //--------------------------------------------------------------------------------
-void setup () {
+public void setup () {
   size (600, 360); 
   smooth(); 
 
@@ -127,7 +190,7 @@ void setup () {
     items[i].suffix = suffixes[i]; 
     items[i].description = descriptions[i]; 
     //items[i].price = float(price[i]); 
-    items[i].price = float(price[i]); 
+    items[i].price = PApplet.parseFloat(price[i]); 
     items[i].picTop = tops[i]; 
     items[i].picBot = bottoms[i]; 
     items[i].action = actions[i]; 
@@ -157,7 +220,7 @@ void setup () {
 
 //--------------------------------------------------------------------------------
 
-void draw () {
+public void draw () {
   background (255); 
 
   println ("Dial " + dial); 
@@ -175,7 +238,7 @@ void draw () {
 
 
 //--------------------------------------------------------------------------------
-void displayState () {
+public void displayState () {
 
   switch (state) {
 
@@ -292,7 +355,7 @@ void displayState () {
     textAlign (LEFT);
     textFont(didotBold, 14); 
     text ("Our deepest Congratulations!", dottedStartX, dottedStartY + wordDist*7, 240, 500); 
-    text ("It’s a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!", dottedStartX, dottedStartY + wordDist*8, 240, 500); 
+    text ("It\u2019s a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!", dottedStartX, dottedStartY + wordDist*8, 240, 500); 
     //textFont(didotItalic, wordSize); 
     // text ("     It is " + items[chosenOne].description + " and " + items[chosenTwo].description + ", and will probably " + verbs[0] + " " + items[chosenOne].action + " and " + items[chosenTwo].action + " with you.", dottedStartX,  dottedStartY + wordDist*8, 240, 500); 
     text ("It is " + items[chosenOne].description + " and " + items[chosenTwo].description, dottedStartX, dottedStartY + wordDist*9, 240, 500); 
@@ -307,14 +370,14 @@ void displayState () {
     text ( " ...........................  $ " + items[chosenOne].price, dottedStartX + 250, dottedStartY);
     text ( " ...........................  $ " + items[chosenTwo].price, dottedStartX + 250, dottedStartY + wordDist); 
     text (  " ..........................  $ " + "% 10.00", dottedStartX + 250, dottedStartY  + wordDist*2); 
-    text ("Total $" + ((items[chosenOne].price + items[chosenTwo].price) - ((items[chosenOne].price + items[chosenTwo].price)*.10) ), dottedStartX + 260, dottedStartY + wordDist*5); 
+    text ("Total $" + ((items[chosenOne].price + items[chosenTwo].price) - ((items[chosenOne].price + items[chosenTwo].price)*.10f) ), dottedStartX + 260, dottedStartY + wordDist*5); 
 
-    dial = int(random (0, items.length)); 
+    dial = PApplet.parseInt(random (0, items.length)); 
 
     //prepare the text for the printer
     header = "******GENOTYPEWRITER*********"; 
     congrats = "Our deepest Congratulations!"; 
-    combo = "It’s a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!"; 
+    combo = "It\u2019s a " + items[chosenOne].prefix + items[chosenTwo].suffix + "!"; 
     product1 = items[chosenOne].name + " .........  $ " + items[chosenOne].price;
     product2 = items[chosenTwo].name + " .........  $ " + items[chosenTwo].price;
     total = " ....... Total $" + (items[chosenOne].price + items[chosenTwo].price); 
@@ -335,7 +398,7 @@ void displayState () {
 
 //--------------------------------------------------------------------------------
 
-void theSwitch () {
+public void theSwitch () {
 
   isItOn = bigSwitch; 
 
@@ -404,7 +467,7 @@ void theSwitch () {
 }
 
 //--------------------------------------------------------------------------------
-void theDial () {
+public void theDial () {
 
   if (millis () -last > interval) {  // while the current timer is greater than interval
     //println (inByte); 
@@ -448,7 +511,7 @@ void theDial () {
 
 //-------------------------------------------------------------------------------
 // this is from tom igoe's second serial lab
-void serialEvent(Serial myPort) { 
+public void serialEvent(Serial myPort) { 
   // read the serial buffer:
   String myString = myPort.readStringUntil('\n');
   // if you got any bytes other than the linefeed:
@@ -464,7 +527,7 @@ void serialEvent(Serial myPort) {
     } 
     // if you have heard from the microcontroller, proceed:
     else {
-      int sensors[] = int(split(myString, ','));
+      int sensors[] = PApplet.parseInt(split(myString, ','));
       for (int sensorNum = 0; sensorNum < sensors.length; sensorNum++) {
         //print("Sensor " + sensorNum + ": " + sensors[sensorNum] + "\t"); 
         //println();
@@ -482,7 +545,7 @@ void serialEvent(Serial myPort) {
 
 
 //set initial value if timer is after 3 seconds from startup
-void setInit () {
+public void setInit () {
   if ((millis() > 8000) && (initVal == 0)) {
     initVal = inByte;
     dial = randomItem;
@@ -491,13 +554,13 @@ void setInit () {
 
 //--------------------------------------------------------------------------------
 
-void mouseClicked () {
+public void mouseClicked () {
   //println (mouseX + ","+ mouseY);
 }
 
 //--------------------------------------------------------------------------------
 
-void mousePressed() {  
+public void mousePressed() {  
   //thermalPrintString("Congratulations! You pressed the mouse.");
 
 
@@ -510,7 +573,7 @@ void mousePressed() {
 }
 //------------------------------------------------------------------------------
 
-void keyPressed () {
+public void keyPressed () {
 
 
   if (key == CODED) {
@@ -543,7 +606,7 @@ void keyPressed () {
   }
 }
 //--------------------------------------------------------------------------------
-void thermalPrintString(String toPrint) {
+public void thermalPrintString(String toPrint) {
   for (int i = 0; i < toPrint.length(); i++) {
     myPort.write((byte)toPrint.charAt(i));
   }
@@ -551,3 +614,380 @@ void thermalPrintString(String toPrint) {
   myPort.write(9);
 }
 
+ 
+ //Function to get an Array of integers from a Google Spreadsheet
+  public String[] getNumbers(String row) {
+      println("Asking Google for numbers...");
+      sm = new SimpleSpreadsheetManager();
+      sm.init("biozuchi", googleUser, googlePass);
+      sm.fetchSheetByKey(sUrl, 0);
+      
+      int n = sm.currentListEntries.size();
+      String [] returnArray = new String [n];
+      for (int i = 0; i < n; i++) {
+         returnArray[i] = (sm.getCellValue(row, i));
+      };
+      println("Got " + n + " numbers.");
+      return(returnArray);
+  };
+  
+
+class Item {
+
+  String name; 
+  String prefix; 
+  String suffix; 
+  String description;
+  String action; 
+  float price;
+  int xPos, yPos; 
+  int xPosExit, yPosexit;
+  int xPosExitBack, xPosBack; 
+  int disappear; 
+  PImage picTop, picBot;
+  int picSizeX, picSizeY; 
+
+  //float locX, locY; 
+
+  Item () {
+    xPos = 0;
+    yPos = 0;
+    xPosExit = width/2; 
+    xPosExitBack = width/2;
+    xPosBack = width;
+    disappear = 100; 
+    textAlign (CENTER);
+    picSizeX = 230;
+    picSizeY = 128;
+  }
+
+  public void displayName (float locX, float locY, boolean blinkOn) {
+    textSize (50); 
+
+    if (blinkOn) {
+      if (frameCount % 100 < 35) {
+        fill(0);  
+        text (name, locX, locY);
+      }
+    } 
+    else {
+      fill(0);  
+      text (name, locX, locY);
+    }
+  }
+
+  public void displayPicTop (float locX, float locY, boolean blinkOn) {
+    if (blinkOn) {
+      if (frameCount % 100 < 50) {
+        fill(0);  
+        image (picTop, locX, locY, picSizeX, picSizeY );
+      }
+    } 
+    else {
+      fill(0);  
+      image (picTop, locX, locY, picSizeX, picSizeY);
+    }
+  }
+
+  public void displayPicBot (float locX, float locY, boolean blinkOn) {
+    if (blinkOn) {
+      if (frameCount % 100 < 50) {
+        fill(0);  
+        image (picBot, locX, locY, picSizeX, picSizeY);
+      }
+    } 
+    else {
+      fill(0);  
+      image (picBot, locX, locY, picSizeX, picSizeY);
+    }
+  }
+
+
+  public String getSuffix () {
+    return suffix;
+  }
+
+  public String getPrefix () {
+    return prefix;
+  }
+
+  public void animateEntry (int heightVar, boolean onTop) {
+    // --> this way
+    fill(255, 0, 0); 
+    //text (name, xPos, heightVar); 
+
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
+    if (xPos < width/2) {
+      xPos = xPos + 10;
+    }
+  }
+
+  public void animateExit (int heightVar, boolean onTop) {
+    // --> this way
+    fill (255, 0, 0);
+    //text (name, xPosExit, heightVar); 
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
+
+    if (xPosExit < width + disappear) {
+      xPosExit = xPosExit + 10;
+    }
+  }
+
+  public void animateEntryBackward (int heightVar, boolean onTop) {
+    // <-- this way  
+    fill(255, 0, 0); 
+    //text (name, xPosBack, heightVar); 
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
+    if (xPosBack > width/2) {
+      xPosBack = xPosBack - 10;
+    }
+  }
+
+  public void animateExitBackward (int heightVar, boolean onTop) {
+    // <-- this way 
+    fill (255, 0, 0);
+    //text (name, xPosExitBack, heightVar); 
+
+    if (onTop == true) {
+      image (picTop, xPos, heightVar);
+    } 
+
+    else {
+      image (picBot, xPos, heightVar);
+    }
+
+    if (xPosExitBack > 0 - (disappear * 2 )) {
+      xPosExitBack = xPosExitBack - 10;
+    }
+  }
+}
+
+/*
+
+SimpleSpreadsheetManager Class
+blprnt@blprnt.com
+July, 2009
+
+This is a quick & dirty class for accessing data from the Google Spreadsheet API.
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public class SimpleSpreadsheetManager {
+
+  SpreadsheetService myService;
+  SpreadsheetEntry spreadsheetEntry;
+  SpreadsheetFeed sheetFeed;
+  WorksheetEntry worksheetEntry;
+
+  List spreadsheets;
+
+  String user;
+  String pass;
+  
+  ListFeed currentListFeed;
+  CellFeed currentCellFeed;
+  List currentCells;
+  List currentListEntries;
+  
+  int currentTotalRows;
+  int currentTotalCols;
+  
+  String currentTitle;
+  String[] tagArray;
+  
+  URL listFeedUrl;
+
+
+  SimpleSpreadsheetManager() {
+    
+  };
+  
+  /*
+  
+  INIT FUNCTION
+  Opens session, uses username & password for authentication
+  
+  */
+
+  public void init(String sessionName, String u, String p) {
+    user = u;
+    pass = p;
+    myService = new SpreadsheetService(sessionName);
+    try {
+      myService.setUserCredentials(user, pass);
+    } 
+    catch (Exception e) {
+      println("ERROR IN AUTHENTICATION");
+    };
+
+  };
+  
+  /*
+  
+  FETCH SHEET BY KEY
+  Gets a spreadsheet listfeed using the unique key - this is in the URL of the spreadsheet
+  The retrieved sheet is both returned and set as the currentListFeed
+  
+  */
+  
+  public ListFeed fetchSheetByKey(String k, int wi) {
+    
+    ListFeed f = new ListFeed();
+    CellFeed cf = new CellFeed();
+    WorksheetFeed w = new WorksheetFeed();
+    
+    //GET WORKSHEETS FEED
+    try {
+      URL worksheetFeedUrl = new URL("http://spreadsheets.google.com/feeds/worksheets/" + k + "/private/full");
+      WorksheetFeed wf2 = new WorksheetFeed();
+      w = myService.getFeed(worksheetFeedUrl, wf2.getClass());
+    }
+    catch(Exception e) {
+      println("ERROR RETRIEVING WORKSHEET FEED");
+    };
+    
+    List worksheets = w.getEntries();
+    WorksheetEntry we = (WorksheetEntry) worksheets.get(wi);   
+    println("RETRIEVED WORKSHEET " + we.getTitle().getPlainText()); 
+    
+    //GET LIST FEED URL
+    try {
+      listFeedUrl = we.getListFeedUrl();//new URL("http://spreadsheets.google.com/feeds/list/" + k + "/od6/private/full");
+      ListFeed lf2 = new ListFeed();
+      f = myService.getFeed(listFeedUrl, lf2.getClass());
+    }
+    catch(Exception e) {
+      println("ERROR RETRIEVING LIST FEED");
+    };
+    
+    //GET CELL FEED
+    try {
+      URL cellFeedUrl = we.getCellFeedUrl();//new URL("http://spreadsheets.google.com/feeds/cells/" + k + "/od6/private/full");
+      CellFeed lf2 = new CellFeed();
+      cf = myService.getFeed(cellFeedUrl, lf2.getClass());
+
+    }
+    catch(Exception e) {
+      println("ERROR RETRIEVING LIST FEED");
+    };
+    
+    currentListFeed = f;
+    currentCellFeed = cf;
+    currentCells = cf.getEntries();
+    currentListEntries = f.getEntries();
+    
+    currentTitle = we.getTitle().getPlainText();
+    currentTotalRows = currentListEntries.size();
+   if (currentListEntries.size() > 0) {
+    ListEntry le = (ListEntry) currentListEntries.get(0);  
+    currentTotalCols = le.getCustomElements().getTags().size();
+
+    Set<String> tags = le.getCustomElements().getTags();
+    tagArray = new String[tags.size()];
+    tagArray = tags.toArray(tagArray);
+   };
+    
+    return(f);
+  };
+  
+  /*
+  
+  GET CELL VALUE
+  Returns the value held in an individual sheet cell.
+  
+  */
+  
+  public String getCellValue(int c, int r) {
+    
+    ListEntry le = (ListEntry) currentListEntries.get(r);    
+    Set<String> tags = le.getCustomElements().getTags();
+    String[] tagArray = new String[tags.size()];
+    tagArray = tags.toArray(tagArray);
+    
+    return(le.getCustomElements().getValue(tagArray[c]));
+   
+  };
+  
+  public String getCellValue(String tag, int r) {
+ 
+    ListEntry le = (ListEntry) currentListEntries.get(r);    
+    return(le.getCustomElements().getValue(tag));
+   
+  };
+  
+  public void setCellValue(String tag, int r, String val) {
+ 
+    ListEntry le = (ListEntry) currentListEntries.get(r);    
+    le.getCustomElements().setValueLocal(tag, val);
+    try {
+      ListEntry updatedRow = le.update();
+    }
+    catch (Exception e){
+      
+    };
+   
+  };
+  
+  public void setNewCellValue(String tag, int r, String val) {
+ 
+    ListEntry le = new ListEntry();  
+    
+    try {
+     le.getCustomElements().setValueLocal(tag, val);
+     ListEntry insertedRow = myService.insert(listFeedUrl, le);
+      ListEntry updatedRow = insertedRow.update();
+    }
+    catch (Exception e){
+      
+    };
+   
+  };
+  
+};
+
+
+
+
+
+
+  static public void main(String args[]) {
+    PApplet.main(new String[] { "--present", "--bgcolor=#666666", "--stop-color=#cccccc", "genotypewriter_show_postshow" });
+  }
+}

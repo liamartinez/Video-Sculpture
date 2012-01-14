@@ -1,13 +1,3 @@
-/*
-
-GenoTypewriter
-Lia Martinez && William Jennings
-
-ITP 2012
-
-*/
-
-
 //google code
 SimpleSpreadsheetManager sm;
 String sUrl = "0AurJ3F3c5fapdGJJZVlsNklsUFVMWW5BNDlTZE05eGc"; 
