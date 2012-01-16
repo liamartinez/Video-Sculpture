@@ -1,11 +1,11 @@
 /*
 
-GenoTypewriter
-Lia Martinez && William Jennings
-
-ITP 2012
-
-*/
+ GenoTypewriter
+ Lia Martinez && William Jennings
+ 
+ ITP 2012
+ 
+ */
 
 
 //google code
@@ -72,6 +72,7 @@ boolean forward;
 boolean switchHit = true; 
 
 boolean mouseOnly; 
+
 
 int randomItem; 
 int itemOneX, itemOneY;
@@ -152,7 +153,14 @@ void setup () {
   mouseOnly = true; //when using unstable mechanics, make this false to compensate
 
     dial = 0; 
-  // randomItem = int(random(0, items.length)); //move this somewhere else - remember condom
+
+  println ("***************** GENOTYPEWRITER *********************");
+  println ("Will Jennings & Lia Martinez");
+  println ("f    enter fullscreen"); 
+  println ("F    exit fullscreen");
+  println ("r    reset selection");
+  println ("m    toggle mouseOnly Mode (default is true)");
+  println ("***************** GENOTYPEWRITER *********************");
 }
 
 //--------------------------------------------------------------------------------
@@ -160,14 +168,12 @@ void setup () {
 void draw () {
   background (255); 
 
-  println ("Dial " + dial); 
-
   if (!mouseOnly) {
     setInit(); //set initial rotation value 
     //println ("initvalue is " + initVal + " inbyte is " + inByte); 
-    theDial();    
+    theDial();
   }
-  
+
 
   theSwitch ();
   displayState();
@@ -187,12 +193,12 @@ void displayState () {
     fill (255); 
     textFont(didotBold, 30); 
 
-    if (frameCount % 100 < 50) {
+    if (frameCount % 100 < 75) {
       if (!mouseOnly) {
         text ("Hit The Lever To Continue", width/2, height-50);
       } 
       else {
-        text ("Press The Mouse To Continue", width/2, height-50);
+        text ("Hit The Lever To Continue", width/2, height-50);
       }
     }
     break; 
@@ -256,7 +262,7 @@ void displayState () {
       text ("Hit the lever again for your receipt", locOneX-50, locOneY + 230);
     } 
     else {
-      text ("Press the mouse for your receipt", locOneX-50, locOneY + 230);
+      text ("Hit the lever again for your receipt", locOneX-50, locOneY + 230);
     }
 
     break;
@@ -540,6 +546,23 @@ void keyPressed () {
   } 
   else if (key == 'r') {
     state = 1; //reset selection
+  } 
+  else if (key == 'm') {
+    if (!mouseOnly) {
+      mouseOnly = true;
+    } 
+    else {
+      mouseOnly = false;
+    }
+  } 
+  else if (key == ' ') {
+
+    if (state < 4) {
+      state ++;
+    } 
+    else {
+      state = 0;
+    }
   }
 }
 //--------------------------------------------------------------------------------
