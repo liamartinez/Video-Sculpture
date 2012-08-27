@@ -43,7 +43,7 @@ class Item {
 
   void displayPicTop (float locX, float locY, boolean blinkOn) {
     if (blinkOn) {
-      if (frameCount % 100 < 50) {
+      if (frameCount % 20 < 10) {
         fill(0);  
         image (picTop, locX, locY, picSizeX, picSizeY );
       }
@@ -56,7 +56,7 @@ class Item {
 
   void displayPicBot (float locX, float locY, boolean blinkOn) {
     if (blinkOn) {
-      if (frameCount % 100 < 50) {
+      if (frameCount % 20 < 10) {
         fill(0);  
         image (picBot, locX, locY, picSizeX, picSizeY);
       }
