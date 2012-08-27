@@ -4,7 +4,8 @@ class Item {
   String prefix; 
   String suffix; 
   String description;
-  String action; 
+  String action;
+  String letter;  
   float price;
   int xPos, yPos; 
   int xPosExit, yPosexit;
@@ -23,8 +24,8 @@ class Item {
     xPosBack = width;
     disappear = 100; 
     textAlign (CENTER);
-    picSizeX = 230;
-    picSizeY = 128;
+    picSizeX = 300;
+    picSizeY = 167;
   }
 
   void displayName (float locX, float locY, boolean blinkOn) {
