@@ -32,13 +32,11 @@ class Item {
     textSize (50); 
 
     if (blinkOn) {
-      if (frameCount % 100 < 35) {
-        fill(0);  
+      if (frameCount % 100 < 35) { 
         text (name, locX, locY);
       }
     } 
     else {
-      fill(0);  
       text (name, locX, locY);
     }
   }

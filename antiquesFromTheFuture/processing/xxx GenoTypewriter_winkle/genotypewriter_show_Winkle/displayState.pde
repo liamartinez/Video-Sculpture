@@ -5,6 +5,10 @@ void displayState () {
   startSectionTwo = height/5;
   startSectionThree = height - ((height/5)*2); 
   
+  int startInfoText = int(boxes.infoBoxStart) + 20; 
+  
+  textFont (futuraMedium); 
+  
   switch (state) {
 
   case 0: 
@@ -37,14 +41,23 @@ void displayState () {
     fill (255, 0, 0); 
     text (alphabet.alphabet[dial], width/2, (startSectionTwo+alphabet.boxHeight) + 60); 
     textSize (20); 
-    textFont(didot, 48); 
     imageMode (CORNER);  
     image (logo, width/2 - (logo.width/2), 0); 
 
-    imageMode (CENTER); 
-    items[dial].displayPicTop (width/2, (height/2 - heightFactor) +60, true); 
-    items[dial].displayName (width/2 - 200, (height/2-5) +60, true); 
-
+    imageMode (CORNER); 
+    items[dial].displayPicTop (width/2 - ((items[dial].picSizeX)/2), startSectionThree-items[dial].picSizeY, true); 
+    textAlign (CORNER); 
+    fill (255); 
+    textSize (30); 
+    text ("1/2 = ", startInfoText, (startSectionTwo+alphabet.boxHeight) + 60); 
+    fill (255, 0, 0); 
+    items[dial].displayName (startInfoText + 100, (startSectionTwo+alphabet.boxHeight) + 60, false); 
+    fill (255); 
+    textSize (20); 
+    text ("good at: " + items[dial].action, startInfoText, (startSectionTwo+alphabet.boxHeight) + 60 + 40); 
+    text ("expect: " + items[dial].description, startInfoText, (startSectionTwo+alphabet.boxHeight) + 60 + 40 + 30); 
+    text ("you pay: " + items[dial].price, startInfoText, (startSectionTwo+alphabet.boxHeight) + 60 + 40 + 30 + 60); 
+    
     break; 
 
   case 2:
@@ -61,12 +74,26 @@ void displayState () {
     imageMode (CORNER);
     image (logo, width/2 - (logo.width/2), 0); 
 
-    imageMode (CENTER);
-    items[chosenOne].displayPicTop (width/2, (height/2 - heightFactor) +60, false); 
-    items[chosenOne].displayName (width/2 - 200, (height/2-5) +60, false); 
+    imageMode (CORNER);
+    items[chosenOne].displayPicTop (width/2 - ((items[chosenOne].picSizeX)/2), startSectionThree-items[chosenOne].picSizeY, false); 
+    textAlign (CORNER); 
+    fill (0); 
+    textSize (30); 
+    text ("1/2 = ", startInfoText, (startSectionTwo+alphabet.boxHeight) + 60); 
+    items[chosenOne].displayName (startInfoText + 100, (startSectionTwo+alphabet.boxHeight) + 60, false); 
 
-    items[dial].displayPicBot (width/2, (height/2 + heightFactor) + 60, true); 
-    items[dial].displayName (width/2 + 200, (height/2+30) + 60, true); 
+    items[dial].displayPicBot (width/2- ((items[dial].picSizeX)/2), startSectionThree, true); 
+    textAlign (CORNER); 
+    fill (255); 
+    textSize (30); 
+    text ("1/2 = ", startInfoText, startSectionThree + 60); 
+    fill (255, 0, 0); 
+    items[dial].displayName (startInfoText + 100, startSectionThree + 60, false); 
+    fill (255); 
+    textSize (20); 
+    text ("good at: " + items[dial].action, startInfoText, startSectionThree + 60 + 40); 
+    text ("expect: " + items[dial].description, startInfoText, startSectionThree + 60 + 40 + 30); 
+    text ("you pay: " + items[dial].price, startInfoText, startSectionThree + 60 + 40 + 30 + 60); 
 
     break; 
 
@@ -86,21 +113,19 @@ void displayState () {
     imageMode (CORNER);
     image (logo, width/2 - (logo.width/2), 0); 
 
-    imageMode (CENTER);
-    items[chosenOne].displayPicTop (width/2, (height/2 - heightFactor) +60, false); 
-    items[chosenOne].displayName (width/2 - 200, (height/2-5) +60, false); 
+    imageMode (CORNER);
+    items[chosenOne].displayPicTop (width/2 - ((items[dial].picSizeX)/2), startSectionThree-items[dial].picSizeY, false); 
+    items[chosenTwo].displayPicBot (width/2- ((items[dial].picSizeX)/2), startSectionThree, false); 
 
-    items[chosenTwo].displayPicBot (width/2, (height/2 + heightFactor) + 60, false); 
-    items[chosenTwo].displayName (width/2 + 200, (height/2+30) + 60, false); 
 
     textAlign (LEFT); 
-    textSize (25); 
-    text ("Great! Its a " + items[chosenOne].prefix + items[chosenTwo].suffix + " !", locOneX-50, locOneY + 200); 
+    textSize (45); 
+    text ("Great! Its a " + items[chosenOne].prefix + items[chosenTwo].suffix + " !", 30, startSectionTwo + height/8); 
     if (!mouseOnly) {
-      text ("Hit the lever again for your receipt", locOneX-50, locOneY + 230);
+      text ("Hit the mouse again for your receipt", width/2 - 100, height - height/8);
     } 
     else {
-      text ("Hit the lever again for your receipt", locOneX-50, locOneY + 230);
+      text ("Hit the lever again for your receipt", width/2 - 100, height - height/ 8);
     }
 
     break;

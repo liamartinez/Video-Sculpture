@@ -62,6 +62,8 @@ PFont didot;
 PFont didotItalic;
 PFont didotBold; 
 
+PFont futuraMedium; 
+
 int locOneX, locOneY; 
 int heightFactor; 
 
@@ -110,6 +112,8 @@ void setup () {
   didot = loadFont ("Didot-48.vlw");   
   didotItalic = loadFont ("Didot-Italic-48.vlw"); 
   didotBold = loadFont ("Didot-Bold-48.vlw"); 
+
+  futuraMedium = loadFont ("Futura-Medium-48.vlw"); 
 
   logo = loadImage ("geno_logo.jpg"); 
   receipt = loadImage ("geno_receipt.jpg"); 
