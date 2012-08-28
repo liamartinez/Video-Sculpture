@@ -15,7 +15,10 @@ class AlphabetIndicator {
 
   void drawAlphabet (int currentLetter_, int locationY_) {
 
-    currentLetter = currentLetter_;   
+    int roundNum = (currentLetter_/alphabet.length);
+    currentLetter = currentLetter_ - (roundNum*currentLetter); 
+    println (currentLetter_ + " divided by " + roundNum + " equals " + currentLetter); 
+
     locationY = locationY_; 
     
     textAlign (CORNER); 
@@ -36,5 +39,13 @@ class AlphabetIndicator {
       text (alphabet[i], (width/26) * i, locationY + (boxHeight-boxHeight/4));
     }
   }
+  
+  
+  String getLetter(int currentLetter_) {
+
+    return alphabet[currentLetter]; 
+    
+  }
+  
 }
 

@@ -39,7 +39,7 @@ void displayState () {
     textAlign (CENTER);
     textSize (50); 
     fill (255, 0, 0); 
-    text (alphabet.alphabet[dial], width/2, (startSectionTwo+alphabet.boxHeight) + 60); 
+    text (alphabet.getLetter(dial), width/2, (startSectionTwo+alphabet.boxHeight) + 60); 
     textSize (20); 
     imageMode (CORNER);  
     image (logo, width/2 - (logo.width/2), 0); 
@@ -69,7 +69,7 @@ void displayState () {
     textAlign (CENTER);
     textSize (50); 
     fill (255, 0, 0); 
-    text (alphabet.alphabet[dial], width/2, startSectionThree + (startSectionThree-startSectionTwo-alphabet.boxHeight) - 30); 
+    text (alphabet.getLetter(dial), width/2, startSectionThree + (startSectionThree-startSectionTwo-alphabet.boxHeight) - 30); 
     textSize (20); 
     imageMode (CORNER);
     image (logo, width/2 - (logo.width/2), 0); 

@@ -33,7 +33,7 @@ int inByte;  //values from arduino
 int initVal; //calibrated initial value
 int bigSwitch; //switchpin
 
-Item[] items = new Item[26]; //array size
+Item[] items = new Item[78]; //array size
 String[] verbs = new String [5];
 
 int dial; 
@@ -93,6 +93,7 @@ void setup () {
 
   fs = new FullScreen(this); 
 
+
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
   String[] prefixes = getNumbers("prefix"); 
@@ -128,8 +129,8 @@ void setup () {
   for (int i = 0; i < items.length; i++) {
 
     //load the pictures
-    tops[i] = loadImage ("top_" + i + ".png");
-    bottoms[i] = loadImage ("bot_" + i + ".png");
+    tops[i] = loadImage ("top_" + (i+1) + ".png");
+    bottoms[i] = loadImage ("bot_" + (i+1) + ".png");
 
     //put them in the object
     items[i] = new Item();
@@ -142,7 +143,7 @@ void setup () {
     items[i].picTop = tops[i]; 
     items[i].picBot = bottoms[i]; 
     items[i].action = actions[i]; 
-    println (i+ " " + items[i].name);
+    println (i + " " + items[i].name);
   }
 
 
