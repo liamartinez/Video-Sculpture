@@ -115,7 +115,7 @@ void setup () {
 
   futuraMedium = loadFont ("Futura-Medium-48.vlw"); 
 
-  logo = loadImage ("geno_logo.jpg"); 
+  logo = loadImage ("geno_logo.png"); 
   receipt = loadImage ("geno_receipt.jpg"); 
   coupon = loadImage ("genotypus.jpg"); 
   instructionsPage = loadImage("selection_screen.jpg"); 
@@ -128,8 +128,8 @@ void setup () {
   for (int i = 0; i < items.length; i++) {
 
     //load the pictures
-    tops[i] = loadImage ("top_" + i + ".jpg");
-    bottoms[i] = loadImage ("bot_" + i + ".jpg");
+    tops[i] = loadImage ("top_" + i + ".png");
+    bottoms[i] = loadImage ("bot_" + i + ".png");
 
     //put them in the object
     items[i] = new Item();
@@ -361,14 +361,16 @@ void mouseClicked () {
 //--------------------------------------------------------------------------------
 
 void mousePressed() {  
-  //thermalPrintString("Congratulations! You pressed the mouse.");
+  thermalPrintString("Congratulations! You pressed the mouse.");
 
+  /*
   if (state < 4) {
     state ++;
   } 
   else {
     state = 0;
   }
+  */
 }
 //------------------------------------------------------------------------------
 
@@ -427,7 +429,7 @@ void thermalPrintString(String toPrint) {
     myPort.write((byte)toPrint.charAt(i));
   }
   //myPort.write((byte)'\n');
-  myPort.write(9);
+  myPort.write(2);
 }
 
 

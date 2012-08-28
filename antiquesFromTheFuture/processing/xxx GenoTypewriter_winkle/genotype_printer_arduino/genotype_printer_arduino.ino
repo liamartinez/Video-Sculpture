@@ -9,7 +9,7 @@ Thermal printer(printer_RX_Pin, printer_TX_Pin);
 String incoming = "";
 char * out;
 
-const int switchPin = 2;      // digital input 
+const int switchPin = 4;      // digital input 
 const int cardPin = 8;
 
 
@@ -17,7 +17,7 @@ int sensorValue;
 String barcode; 
 
 //average
-const int numReadings = 10;
+const int numReadings = 5;
 
 int readings[numReadings];      // the readings from the analog input
 int index = 0;                  // the index of the current reading

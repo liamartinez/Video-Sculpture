@@ -56,7 +56,7 @@ void displayState () {
     textSize (20); 
     text ("good at: " + items[dial].action, startInfoText, (startSectionTwo+alphabet.boxHeight) + 60 + 40); 
     text ("expect: " + items[dial].description, startInfoText, (startSectionTwo+alphabet.boxHeight) + 60 + 40 + 30); 
-    text ("you pay: " + items[dial].price, startInfoText, (startSectionTwo+alphabet.boxHeight) + 60 + 40 + 30 + 60); 
+    text ("you pay: $" + items[dial].price, startInfoText, (startSectionTwo+alphabet.boxHeight) + 60 + 40 + 30 + 60); 
 
     break; 
 
@@ -93,7 +93,7 @@ void displayState () {
     textSize (20); 
     text ("good at: " + items[dial].action, startInfoText, startSectionThree + 60 + 40); 
     text ("expect: " + items[dial].description, startInfoText, startSectionThree + 60 + 40 + 30); 
-    text ("you pay: " + items[dial].price, startInfoText, startSectionThree + 60 + 40 + 30 + 60); 
+    text ("you pay: $" + items[dial].price, startInfoText, startSectionThree + 60 + 40 + 30 + 60); 
 
     break; 
 
@@ -102,6 +102,16 @@ void displayState () {
     stripeBorder.drawStripeBorder(startSectionTwo); 
     stripeBorder.drawStripeBorder(height - stripeBorder.boxHeight); 
     boxes.drawBoxes(state); 
+    
+    textAlign (CORNER); 
+    fill (0); 
+    textSize (30); 
+    text ("1/2 = ", startInfoText, (startSectionTwo+alphabet.boxHeight) + 60); 
+    items[chosenOne].displayName (startInfoText + 100, (startSectionTwo+alphabet.boxHeight) + 60, false); 
+    
+    textSize (30); 
+    text ("1/2 = ", startInfoText, startSectionThree + 60); 
+    items[chosenTwo].displayName (startInfoText + 100, startSectionThree + 60, false); 
 
     stroke (0); 
     strokeWeight (2); 
@@ -119,13 +129,15 @@ void displayState () {
 
 
     textAlign (LEFT); 
-    textSize (45); 
+    textSize (55); 
     text ("Great! Its a " + items[chosenOne].prefix + items[chosenTwo].suffix + " !", 30, startSectionTwo + height/8); 
+    textAlign (CENTER); 
+    textSize (45); 
     if (!mouseOnly) {
-      text ("Hit the lever again for your receipt", width/2 - 100, height - height/7);
+      text ("HIT THE LEVER AGAIN FOR YOUR RECEIPT", width/2 - 130, height - height/8 + 30);
     } 
     else {
-      text ("Hit the mouse again for your receipt", width/2 - 100, height - height/7);
+      text ("HIT THE MOUSE AGAIN FOR YOUR RECEIPT", width/2 - 130, height - height/8 + 30);
     }
 
     break;
@@ -189,7 +201,7 @@ void displayState () {
 
     dial = int(random (0, items.length)); 
 
-    /*
+    
     //prepare the text for the printer
      header = "******GENOTYPEWRITER*********"; 
      congrats = "Our deepest Congratulations!"; 
@@ -205,7 +217,7 @@ void displayState () {
      printed = false; 
      thermalPrintString(header + (char)'\n' + (char)'\n' + congrats + (char)'\n' + combo + (char)'\n'+ (char)'\n'  + product1 + (char)'\n' + product2 + (char)'\n' + (char)'\n'+description + (char)'\n' + verbage + (char)'\n'+ (char)'\n' + thanks);
      }
-     */
+   
 
     break;
   }

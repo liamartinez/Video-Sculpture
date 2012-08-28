@@ -45,7 +45,8 @@ class Boxes {
     noStroke(); 
 
     topColorBG = 255;
-    topColorText = 0;    bottomColorBG = 0;
+    topColorText = 0;    
+    bottomColorBG = 0;
     bottomColorText = 255;
     break; 
     
@@ -60,6 +61,8 @@ class Boxes {
     break;       
 
     }
+    
+    stroke (0); 
     
     fill(topColorBG); 
     arc(width/2, startSectionThree, width/3, width/3, PI, TWO_PI);
