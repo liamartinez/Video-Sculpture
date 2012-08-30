@@ -15,9 +15,9 @@ class AlphabetIndicator {
 
   void drawAlphabet (int currentLetter_, int locationY_) {
 
-    int roundNum = (currentLetter_/alphabet.length);
-    currentLetter = currentLetter_ - (roundNum*currentLetter); 
-    println (currentLetter_ + " divided by " + roundNum + " equals " + currentLetter); 
+    int roundNum = (currentLetter_/(alphabet.length));
+    currentLetter = currentLetter_ - (roundNum*alphabet.length); 
+    println (currentLetter_ + " minus " + roundNum + " times " + alphabet.length + " equals " + currentLetter);
 
     locationY = locationY_; 
     

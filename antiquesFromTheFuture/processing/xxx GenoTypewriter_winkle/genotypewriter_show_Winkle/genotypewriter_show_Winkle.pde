@@ -85,6 +85,8 @@ int randomItem;
 int itemOneX, itemOneY;
 int itemTwoX, itemTwoY; 
 
+String [] splits; 
+
 //--------------------------------------------------------------------------------
 void setup () {
   //size (600, 360); 
@@ -93,7 +95,7 @@ void setup () {
 
   fs = new FullScreen(this); 
 
-
+  /*
   //get data from the google doc with the titles as string
   String[] names = getNumbers("name");
   String[] prefixes = getNumbers("prefix"); 
@@ -103,6 +105,60 @@ void setup () {
   String[]actions = getNumbers ("actions"); 
 
   verbs = getNumbers ("verbs"); 
+  */
+
+  
+  String [] input = loadStrings ("geno_items.csv"); 
+  splits = new String [input.length]; 
+  
+   println ("number of markers: " + input.length); 
+  
+  for (int i = 0; i < input.length; i++) {
+
+    //load the pictures
+    tops[i] = loadImage ("top_" + (i+1) + ".png");
+    bottoms[i] = loadImage ("bot_" + (i+1) + ".png");
+    
+    splits = input[i].split(",");  
+    //put them in the object
+    items[i] = new Item();
+    items[i].name = splits[0]; 
+    items[i].prefix = splits[2]; 
+    items[i].suffix = splits[3]; 
+    items[i].description = splits[1]; 
+    //items[i].price = float(price[i]); 
+    items[i].price = float(splits[4]); 
+    items[i].picTop = tops[i]; 
+    items[i].picBot = bottoms[i]; 
+    items[i].action = splits[5]; 
+
+    println (i + " " + items[i].name);
+  }
+  
+
+
+  
+  /*
+    for (int i = 0; i < items.length; i++) {
+
+    //load the pictures
+    tops[i] = loadImage ("top_" + (i+1) + ".png");
+    bottoms[i] = loadImage ("bot_" + (i+1) + ".png");
+
+    //put them in the object
+    items[i] = new Item();
+    items[i].name = names[i]; 
+    items[i].prefix = prefixes[i]; 
+    items[i].suffix = suffixes[i]; 
+    items[i].description = descriptions[i]; 
+    //items[i].price = float(price[i]); 
+    items[i].price = float(price[i]); 
+    items[i].picTop = tops[i]; 
+    items[i].picBot = bottoms[i]; 
+    items[i].action = actions[i]; 
+    println (i + " " + items[i].name);
+  }
+  */
 
   println(Serial.list());
   String portName = Serial.list()[0];
@@ -126,25 +182,6 @@ void setup () {
   //printer
   printed = false; 
 
-  for (int i = 0; i < items.length; i++) {
-
-    //load the pictures
-    tops[i] = loadImage ("top_" + (i+1) + ".png");
-    bottoms[i] = loadImage ("bot_" + (i+1) + ".png");
-
-    //put them in the object
-    items[i] = new Item();
-    items[i].name = names[i]; 
-    items[i].prefix = prefixes[i]; 
-    items[i].suffix = suffixes[i]; 
-    items[i].description = descriptions[i]; 
-    //items[i].price = float(price[i]); 
-    items[i].price = float(price[i]); 
-    items[i].picTop = tops[i]; 
-    items[i].picBot = bottoms[i]; 
-    items[i].action = actions[i]; 
-    println (i + " " + items[i].name);
-  }
 
 
 
