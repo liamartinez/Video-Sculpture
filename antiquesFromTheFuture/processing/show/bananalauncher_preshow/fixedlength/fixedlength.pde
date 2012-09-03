@@ -49,7 +49,7 @@ void setup () {
 
   fs = new FullScreen(this); 
   // enter fullscreen mode
-  //fs.setResolution (1680, 1050); 
+  fs.setResolution (1280, 960); 
   fs.enter(); 
 
 
@@ -271,11 +271,13 @@ void keyPressed() {
     }
   }
   
+  /*
   if (key == 'f') {
   fs.enter();
   } else if (key == 'F') {
   fs.leave(); 
   }
+  */
   
 } 
 
@@ -320,7 +322,7 @@ int getLength() {
 void serialEvent (Serial myPort) {
 
   int inByte = myPort.read(); 
-  //println ("inbyte " + inByte); 
+  println ("inbyte " + inByte); 
 
 
   if (inByte != lastByte) 

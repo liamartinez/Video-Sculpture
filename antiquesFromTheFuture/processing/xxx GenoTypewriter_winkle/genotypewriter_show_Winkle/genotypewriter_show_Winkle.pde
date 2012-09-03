@@ -358,7 +358,7 @@ void serialEvent(Serial myPort) {
     if (firstContact == false) {
       if (myString.equals("hello")) { 
         myPort.clear();          // clear the serial port buffer
-        firstContact = true;     // you've had first contact from the microcontroller
+        firstContact = true;     // you've had first contact from  the microcontroller
         myPort.write(1);       // ask for more
       }
     } 
